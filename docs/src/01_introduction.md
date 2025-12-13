@@ -3,7 +3,7 @@
 Welcome to From Zero to QED, an article series that teaches Lean 4 from first principles. This is the tutorial I wish I had when I started learning Lean. The language is powerful but the learning resources remain scattered and incomplete. This series aims to fill that gap.
 
 > [!TIP]
-> This article series is itself a Lean project. Every code sample, every proof, every theorem is extracted from source files that the Lean compiler typechecks on every build. The text you are reading is backed by machine-verified code in the [GitHub repository](https://github.com/sdiehl/hitchhiker-lean.git). Call it a literate proof.
+> This article series is itself a Lean project. Every code sample, every proof, every theorem is extracted from source files that the Lean compiler typechecks on every build. The text you are reading is backed by machine-verified code in the [GitHub repository](https://github.com/sdiehl/zero-to-qed). Call it a literate proof.
 
 ## What This Series Covers
 
@@ -18,7 +18,7 @@ No prior experience with theorem provers is assumed. Familiarity with a typed fu
 [Install Lean 4](https://lean-lang.org/install/) and build the project:
 
 ```bash
-git clone https://github.com/sdiehl/hitchhiker-lean.git
+git clone https://github.com/sdiehl/zero-to-qed
 lake build
 ```
 
