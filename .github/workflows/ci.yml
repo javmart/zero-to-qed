@@ -55,9 +55,26 @@ jobs:
           output_dir: docs/book
           build_html: false
 
+      - name: List generated files
+        run: |
+          echo "=== docs/book contents ==="
+          ls -la docs/book/ || true
+          echo "=== Looking for PDFs ==="
+          find docs -name "*.pdf" || true
+
       - name: Rename PDF
-        run: mv docs/book/combined.pdf docs/book/zero-to-qed.pdf || true
-        continue-on-error: true
+        run: |
+          if [ -f "docs/book/combined.pdf" ]; then
+            mv docs/book/combined.pdf docs/book/zero-to-qed.pdf
+            echo "PDF renamed successfully"
+          elif [ -f "combined.pdf" ]; then
+            mv combined.pdf docs/book/zero-to-qed.pdf
+            echo "PDF found in root, moved to docs/book"
+          else
+            echo "PDF not found, checking for alternatives..."
+            find . -name "*.pdf" -exec cp {} docs/book/zero-to-qed.pdf \; || true
+          fi
+          ls -la docs/book/
 
       - name: Upload mdBook artifact
         uses: actions/upload-artifact@v4

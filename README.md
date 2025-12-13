@@ -6,9 +6,9 @@ A best-effort knowledge transfer for learning Lean 4 the hard way.
 
 ## Read
 
-**Online:** [sdiehl.github.io/zero-to-qed](https://sdiehl.github.io/zero-to-qed/)
+**Online:** [sdiehl.github.io/zero-to-qed](https://sdiehl.github.io/zero-to-qed/01_introduction.html)
 
-**PDF:** [zero-to-qed.pdf](https://sdiehl.github.io/zero-to-qed/zero-to-qed.pdf)
+**PDF:** [zero-to-qed.pdf](https://sdiehl.github.io/zero-to-qed/zero-to-qed.pdf) (or [print version](https://sdiehl.github.io/zero-to-qed/print.html) for browser printing)
 
 ## Build
 
