@@ -1,0 +1,99 @@
+# IO and Concurrency
+
+Programs must touch the world. They read files, open sockets, query databases, render pixels, and occasionally launch missiles. Pure functions, by definition, cannot do any of this. They map inputs to outputs, indifferent to the universe outside their arguments. And yet we write programs precisely to change that universe, to impose our will on entropy, to build something that persists after the process exits. This is the fundamental tension of typed functional programming, and IO is how we resolve it.
+
+The insight is to describe impure computations as pure values. An `IO String` is not a string obtained through side effects; it is a pure, inert description of a computation that, when executed by the runtime, will interact with the world and produce a string. The description itself is referentially transparent. You can pass it around, store it in data structures, combine it with other descriptions, all without anything actually happening. Only when the runtime interprets the description do effects occur. The effect is separated from the specification of the effect, and that separation is everything.
+
+When effects are explicit in types, the signature `readFile : FilePath → IO String` tells you something important: this function touches the filesystem. Compare this to a language where any function might secretly perform IO, where you cannot know without reading the implementation whether `getUserName()` is a pure lookup or a network call. The type becomes documentation that cannot lie. More than that, it becomes a constraint that tools can check. A function typed as pure cannot sneak in a database write. The compiler enforces the separation.
+
+Effects come in varieties. Observable effects change the world in ways the program can later detect: writing a file, then reading it back. Unobservable effects change the world but leave no trace the program can see: logging to stderr, incrementing a metrics counter, writing to `/dev/null`. Then there are effects with international consequences: the missile launch, the funds transfer, the irreversible deletion. Code that launches missiles should look different from code that formats strings. When effects are tracked in types, it does. The engineer reading the signature knows what they are dealing with. The engineer writing the code must confront, at every function boundary, whether this operation belongs in IO or whether it can remain pure. A bear foraging in the forest leaves tracks; a program touching the world should leave type signatures. This is craftsmanship: knowing the consequences of your logic and designing systems where those consequences are visible, reviewable, and constrained.
+
+This matters for the same reason everything in this series matters: we are building systems too complex to hold in our heads, increasingly written by machines that have no heads at all. Explicit effect tracking is not academic purity worship. It is engineering discipline for an era when the codebase is larger than any human can read and the authors include entities that optimize for plausibility rather than correctness. The type signature is the contract. The contract is the only thing we can trust.
+
+## IO Basics
+
+The IO monad represents computations that can perform side effects. All effectful operations live inside IO, and you sequence them using do notation. The "Hello, World!" of functional programming is not a string; it is `IO Unit`, a description of an action that, when run, will emit bytes to a file descriptor and return nothing interesting. The `Unit` return type is honest about its triviality: we did not call this function for its result but for its consequences.
+
+```lean
+{{#include ../../src/ZeroToQED/Effects.lean:io_basics}}
+```
+
+## Pure Computations in IO
+
+Not everything in IO needs to be effectful. Pure computations can be lifted into IO when you need to mix them with effects. The `pure` function wraps a value in an IO that does nothing but return that value. This is not contamination; it is embedding. A pure value inside IO is like a diplomat with immunity: present in foreign territory but untouched by local laws. You can always extract the pure part because it never actually did anything.
+
+```lean
+{{#include ../../src/ZeroToQED/Effects.lean:io_pure}}
+```
+
+## File Operations
+
+File operations live in the `IO.FS` namespace: read, write, append, delete, the usual POSIX inheritance. Files are where programs meet persistence, where the ephemeral computation leaves a mark that outlasts the process. The filesystem is the boundary between the volatile and the durable, between the RAM that vanishes when power fails and the spinning rust or flash cells that remember. Every configuration file, every log, every database is ultimately bytes on a filesystem, and the operations here are how you reach them.
+
+```lean
+{{#include ../../src/ZeroToQED/Effects.lean:file_io}}
+```
+
+## Processing Lines
+
+Reading a file line by line is the fundamental pattern of Unix text processing, the reason `awk` and `sed` exist, the shape of a thousand shell pipelines. The newline character is civilization's oldest API, a contract that dates to the teletype and has outlived every attempt to replace it. In Lean, you get the same streaming capability with type safety and without the quoting nightmares that have spawned more security vulnerabilities than any other single source.
+
+```lean
+{{#include ../../src/ZeroToQED/Effects.lean:file_lines}}
+```
+
+## Error Handling
+
+IO operations can fail. Files go missing, networks drop packets, disks fill up, permissions change, the NFS mount goes stale, the USB drive gets yanked mid-write. The universe is hostile to running programs, and error handling is how we cope with entropy's preference for chaos. Like a bear preparing for winter, a robust program anticipates scarcity: the resource that was there yesterday may not be there tomorrow. Lean provides try-catch blocks that should feel familiar to anyone who has written Java, Python, or JavaScript, except that here the error handling is explicit in the type. An IO action either succeeds or throws, and `try`/`catch` is how you intercept the failure before it propagates to somewhere you cannot recover.
+
+```lean
+{{#include ../../src/ZeroToQED/Effects.lean:error_handling}}
+```
+
+## Mutable References
+
+Sometimes you need a mutable cell, a box you can read from and write to as the computation proceeds. `IO.Ref` provides this: a reference that lives in IO, supporting `get`, `set`, and `modify`. This is controlled mutation, explicit in the type system, not the invisible aliasing that makes imperative code a maze of spooky action at a distance. The reference is a value. You can see who has access to it. You can trace where it flows. The mutation is real, but the accounting is honest.
+
+```lean
+{{#include ../../src/ZeroToQED/Effects.lean:io_ref}}
+```
+
+## Monad Transformers: ExceptT
+
+Real programs layer effects. You want IO for the filesystem, but you also want typed errors that propagate cleanly. Monad transformers stack these capabilities like geological strata, each layer adding something to the computation below. `ExceptT` wraps another monad and adds the ability to short-circuit with a typed error. The result is a computation that can both perform IO and fail with a specific error type, the signature making both capabilities explicit. The layering is architectural, not just convenient. The type tells you exactly what can go wrong and what side effects might occur.
+
+```lean
+{{#include ../../src/ZeroToQED/Effects.lean:except_t}}
+```
+
+## Monad Transformers: ReaderT
+
+`ReaderT` provides access to a read-only environment, an implicit parameter that threads through your computation without cluttering every function signature. This is the dependency injection pattern done right: instead of global variables that any code can mutate, you have a typed environment that flows lexically through your program. Configuration, database connections, logger handles, the parameters that everything needs but nothing should own. The environment is read-only, which means you can reason about it. No function can secretly change the configuration and break something downstream.
+
+```lean
+{{#include ../../src/ZeroToQED/Effects.lean:reader_t}}
+```
+
+## Running External Processes
+
+Lean can spawn external processes and capture their output, bridging the gap between the typed world inside your program and the untyped chaos of shell commands. This is where you call out to `git`, invoke compilers, run linters, orchestrate builds. The interface is necessarily stringly-typed at the boundary, but you can wrap it in whatever validation your domain requires. Just remember that every subprocess is a portal to undefined behavior: the external program can do anything, and your types cannot save you from what happens on the other side.
+
+```lean
+{{#include ../../src/ZeroToQED/Effects.lean:process_io}}
+```
+
+## Environment Variables
+
+Environment variables are the original configuration mechanism, a key-value store that predates databases by decades. They are inherited from parent processes, invisible in your source code, and different on every machine. This is both their power and their peril. `PATH`, `HOME`, `USER`, the secret sauce that makes your program behave differently in development and production. Access them through IO because reading them is an effect: the same code will behave differently depending on what the shell exported before launch.
+
+```lean
+{{#include ../../src/ZeroToQED/Effects.lean:environment}}
+```
+
+## The Discipline of Effects
+
+The history of programming is a history of discovering what we should not have been allowed to do. Unrestricted goto gave us spaghetti code; we constrained control flow with structured programming. Unrestricted memory access gave us buffer overflows; we constrained pointers with ownership and garbage collection. Unrestricted side effects gave us programs impossible to test, impossible to parallelize, impossible to reason about. We are still learning to constrain effects.
+
+Every constraint is a gift. When the type system refuses to let you perform IO in a pure function, it is saving you from bugs that would surface only in production, only under load, only on the third Tuesday of months with an R in them. The constraint is leverage.
+
+The IO monad is a template for how to think about the boundary between your program and the world. The world is messy, stateful, concurrent, and hostile. Your program can be clean, pure, sequential, and predictable. The boundary between them should be narrow, explicit, and scrutinized. That is engineering discipline for systems that must work when no one is watching.

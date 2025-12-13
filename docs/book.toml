@@ -1,0 +1,49 @@
+[book]
+title = "From Zero to QED"
+description = "A comprehensive guide to Lean 4 programming and theorem proving"
+authors = ["Your Name"]
+language = "en"
+src = "src"
+
+# Preprocessor for including external files
+# Using the built-in {{#include}} directive that mdBook supports natively
+
+[build]
+build-dir = "book"
+create-missing = true
+
+[output.html]
+default-theme = "navy"
+preferred-dark-theme = "navy"
+smart-punctuation = true
+mathjax-support = true
+site-url = "/hitchhiker-lean/"
+git-repository-url = "https://github.com/yourusername/hitchhiker-lean"
+edit-url-template = "https://github.com/yourusername/hitchhiker-lean/edit/main/docs/{path}"
+additional-js = []
+additional-css = []
+
+[output.html.fold]
+enable = true
+level = 3
+
+[output.html.playground]
+editable = false
+copyable = true
+copy-js = true
+line-numbers = true
+
+[output.html.search]
+enable = true
+limit-results = 30
+teaser-word-count = 30
+use-boolean-and = true
+boost-title = 2
+boost-hierarchy = 1
+boost-paragraph = 1
+expand = true
+heading-split-level = 3
+copy-js = true
+
+[output.html.print]
+enable = true

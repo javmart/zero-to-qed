@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  build-and-docs:
+    name: Build Documentation
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # - name: Install Elan
+      #   run: |
+      #     curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y
+      #     echo "$HOME/.elan/bin" >> $GITHUB_PATH
+
+      # - name: Get Mathlib cache
+      #   run: lake exe cache get
+
+      # - name: Build Lean project
+      #   run: lake build
+
+      - name: Setup mdBook
+        uses: peaceiris/actions-mdbook@v2
+        with:
+          mdbook-version: 'latest'
+
+      - name: Build mdBook documentation
+        run: cd docs && mdbook build
+
+      # Skipping Lean API docs generation as it takes too long
+      # - name: Build Lean API docs
+      #   run: lake script run docs
+      #   continue-on-error: true
+
+      - name: Upload mdBook artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mdbook
+          path: docs/book
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build-and-docs
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Download mdBook artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: mdbook
+          path: public
+
+      - name: Upload to GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

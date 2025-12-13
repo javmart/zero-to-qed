@@ -1,0 +1,56 @@
+# Lean build artifacts
+.lake/
+build/
+lake-packages/
+*.olean
+build.log
+
+lake-manifest.json
+
+# Documentation build
+docs/book/
+docbuild/
+
+# Editor files
+.vscode/
+*.code-workspace
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+.Spotlight-V100
+.Trashes
+
+# mdBook
+book/
+
+# Temporary files
+*.tmp
+*.bak
+*.orig
+*.json.tmp
+
+# Log files
+*.log
+
+# Python cache (for serving docs)
+__pycache__/
+*.py[cod]
+*$py.class
+
+# IDE specific
+.claude
+.codex
+
+# Dependencies
+node_modules/
+target/
+
+# Outputs
+*.html
+
+*.md

@@ -1,0 +1,35 @@
+{{!--
+    Custom head content for From Zero to QED
+    This file configures MathJax for mathematical equations
+--}}
+
+{{!-- MathJax Configuration --}}
+<script>
+window.MathJax = {
+    tex: {
+        // Enable inline math with dollar signs and display math with double dollars
+        inlineMath: [['\\(', '\\)']],
+        displayMath: [['\\[', '\\]'], ['$$', '$$']],
+        // Process escapes to allow \$ for literal dollar signs
+        processEscapes: true,
+        // Custom macros for common notation
+        macros: {
+            N: "\\mathbb{N}",
+            Z: "\\mathbb{Z}",
+            Q: "\\mathbb{Q}",
+            R: "\\mathbb{R}",
+            C: "\\mathbb{C}",
+            defeq: "\\overset{\\text{def}}{=}",
+            Type: "\\text{Type}",
+            Prop: "\\text{Prop}",
+            Sort: "\\text{Sort}",
+            alpha: "\\alpha",
+            beta: "\\beta"
+        }
+    },
+    options: {
+        // Process page on startup
+        skipStartupTypeset: false
+    }
+};
+</script>
