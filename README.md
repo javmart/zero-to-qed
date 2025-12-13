@@ -1,7 +1,9 @@
-# From Zero to QED
+# From Zero to QED (Beta)
 
-From Zero to QED: A quirky introduction to theorem proving and dependent types
-from first principles.
+First draft of *From Zero to QED: An informal introduction to formality*.
+
+Or in other words a terribly quirky introduction to theorem proving and
+dependent types from first principles.
 
 ## Install
 
