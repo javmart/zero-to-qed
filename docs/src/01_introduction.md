@@ -1,6 +1,6 @@
 # Introduction
 
-Welcome to From Zero to QED, an article series that teaches Lean 4 from first principles. The language is powerful but the learning resources remain scattered and incomplete. This series aims to fill that gap.
+Welcome to **From Zero to QED**, an informal introduction to formality in Lean 4. This article series teaches the language from first principles. Lean is powerful but the learning resources remain scattered and incomplete. This series is a best effort to fill that gap.
 
 > [!NOTE]
 > This is the beta release. There are bound to be typos, errors, and rough edges. If you spot something, send a PR on [GitHub](https://github.com/sdiehl/zero-to-qed).
