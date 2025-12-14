@@ -8,6 +8,32 @@ on:
   workflow_dispatch:
 
 jobs:
+  build-lean:
+    name: Build and Test Lean
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install elan
+        run: |
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> $GITHUB_PATH
+
+      - name: Get Mathlib cache
+        run: lake exe cache get
+
+      - name: Build project
+        run: lake build
+
+      - name: Run tests
+        run: lake exe tests
+
+      - name: Test executables from prose
+        run: ./scripts/test_examples.sh
+
   build-and-docs:
     name: Build Documentation
     runs-on: ubuntu-latest
