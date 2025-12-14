@@ -1,0 +1,216 @@
+/* Print and PDF styling */
+
+@media print {
+  /* Page setup */
+  @page {
+    size: A4;
+    margin: 2.5cm 2cm;
+  }
+
+  body {
+    font-family: "Georgia", "Times New Roman", serif;
+    font-size: 11pt;
+    line-height: 1.7;
+    color: #000;
+    background: #fff;
+  }
+
+  /* Title page */
+  .title-page {
+    page-break-after: always;
+    min-height: 85vh;
+  }
+
+  .title-page h1 {
+    font-size: 3em;
+    font-weight: normal;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.3em;
+    page-break-before: avoid;
+  }
+
+  .title-page h2 {
+    font-size: 1.8em;
+    font-weight: normal;
+    margin-top: 0;
+  }
+
+  .title-page h3 {
+    font-size: 1.3em;
+    font-weight: normal;
+    font-style: italic;
+    color: #444;
+  }
+
+  .title-page hr {
+    margin: 2em auto;
+    width: 50%;
+    border: none;
+    border-top: 1px solid #666;
+  }
+
+  .title-page p {
+    font-size: 1.1em;
+  }
+
+  /* Chapter headings */
+  h1 {
+    font-family: "Georgia", serif;
+    font-size: 2.2em;
+    font-weight: normal;
+    page-break-before: always;
+    page-break-after: avoid;
+    margin-top: 0;
+    padding-top: 1.5em;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 0.3em;
+  }
+
+  h2 {
+    font-family: "Georgia", serif;
+    font-size: 1.5em;
+    font-weight: normal;
+    page-break-after: avoid;
+    margin-top: 2em;
+  }
+
+  h3 {
+    font-family: "Georgia", serif;
+    font-size: 1.2em;
+    font-weight: bold;
+    page-break-after: avoid;
+  }
+
+  /* Paragraphs */
+  p {
+    text-align: justify;
+    orphans: 3;
+    widows: 3;
+  }
+
+  /* Code blocks */
+  pre, code {
+    font-family: "Menlo", "Monaco", "Consolas", monospace;
+  }
+
+  pre {
+    font-size: 9pt;
+    line-height: 1.4;
+    background: #f8f8f8 !important;
+    border: 1px solid #e0e0e0;
+    border-radius: 3px;
+    padding: 1em;
+    page-break-inside: avoid;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+
+  code {
+    font-size: 0.9em;
+    background: #f5f5f5;
+    padding: 0.15em 0.4em;
+    border-radius: 2px;
+  }
+
+  pre code {
+    background: none;
+    padding: 0;
+  }
+
+  /* Tables */
+  table {
+    font-size: 10pt;
+    border-collapse: collapse;
+    page-break-inside: avoid;
+    width: 100%;
+    margin: 1.5em 0;
+  }
+
+  th, td {
+    border: 1px solid #ccc;
+    padding: 0.6em 0.8em;
+    text-align: left;
+  }
+
+  th {
+    background: #f5f5f5;
+    font-weight: bold;
+  }
+
+  /* Blockquotes and callouts */
+  blockquote {
+    border-left: 3px solid #666;
+    margin: 1.5em 0;
+    margin-left: 0;
+    padding: 0.5em 1em;
+    background: #fafafa;
+    page-break-inside: avoid;
+  }
+
+  blockquote p {
+    text-align: left;
+  }
+
+  /* Links */
+  a {
+    color: #000;
+    text-decoration: none;
+    border-bottom: 1px dotted #666;
+  }
+
+  /* Hide navigation elements */
+  .nav-wrapper,
+  .nav-chapters,
+  .menu-bar,
+  .sidebar,
+  #sidebar-toggle,
+  #menu-bar,
+  .theme-popup,
+  .search-popup {
+    display: none !important;
+  }
+
+  /* Math equations */
+  .MathJax {
+    font-size: 1em !important;
+  }
+
+  /* Prevent page breaks in bad places */
+  h1, h2, h3, h4 {
+    page-break-after: avoid;
+  }
+
+  pre, blockquote, table, figure {
+    page-break-inside: avoid;
+  }
+
+  /* Lists */
+  ul, ol {
+    margin: 1em 0;
+    padding-left: 2em;
+  }
+
+  li {
+    margin-bottom: 0.3em;
+  }
+}
+
+/* Screen styles for title page */
+.title-page {
+  text-align: center;
+}
+
+.title-page h1 {
+  font-size: 2.5em;
+  margin-bottom: 0.2em;
+}
+
+.title-page h2 {
+  margin-top: 0;
+}
+
+.title-page h3 {
+  font-style: italic;
+  color: #666;
+}

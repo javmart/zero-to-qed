@@ -8,6 +8,8 @@ import ZeroToQED.Subtyping
 import ZeroToQED.TypeTheory
 import ZeroToQED.Tactics
 import ZeroToQED.Mathematics
+import ZeroToQED.Verification
+import ZeroToQED.GameOfLife
 
 /-!
 # From Zero to QED
