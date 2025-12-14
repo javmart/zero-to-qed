@@ -183,7 +183,7 @@ def build_combined_markdown() -> str:
     # Use fonts available on both macOS and Ubuntu CI
     parts.append("""---
 title: "From Zero to QED"
-subtitle: "An informal introduction to formality"
+subtitle: "An informal introduction to formality in Lean 4"
 author: "Stephen Diehl"
 documentclass: report
 geometry: margin=1in

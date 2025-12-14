@@ -1,8 +1,6 @@
 # From Zero to QED
 
-*An informal introduction to formality.*
-
-A best-effort knowledge transfer for learning Lean 4 the hard way.
+*An informal introduction to formality in Lean 4.*
 
 ## Read
 

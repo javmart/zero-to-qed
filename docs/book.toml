@@ -1,6 +1,6 @@
 [book]
 title = "From Zero to QED"
-description = "An informal introduction to formality: theorem proving and dependent types in Lean 4"
+description = "An informal introduction to formality in Lean 4"
 authors = ["Stephen Diehl"]
 language = "en"
 src = "src"
