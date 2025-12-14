@@ -4,9 +4,9 @@ The promise of theorem provers extends beyond mathematics. We can verify that so
 
 ## Intrinsically-Typed Interpreters
 
-The standard approach to building interpreters involves two phases. First, parse text into an untyped abstract syntax tree. Second, run a type checker that rejects malformed programs. This works, but the interpreter must still handle the case where a program passes the type checker but evaluates to nonsense. The runtime carries the burden of the type system's failure modes.
+The standard approach to building interpreters involves two phases. First, parse text into an untyped abstract syntax tree. Second, run a type checker that rejects malformed programs. This works, but the interpreter must still handle the case where a program passes the type checker but evaluates to nonsense. The runtime carries the burden of the type system's failure modes. It is like a bouncer who checks IDs at the door but still has to deal with troublemakers inside.
 
-Intrinsically-typed interpreters take a different approach. The abstract syntax tree itself encodes typing judgments. An ill-typed program cannot be constructed. The type system statically excludes runtime type errors, not by checking them at runtime, but by making them unrepresentable.
+Intrinsically-typed interpreters refuse to play this game. The abstract syntax tree itself encodes typing judgments. An ill-typed program cannot be constructed. The type system statically excludes runtime type errors, not by checking them at runtime, but by making them unrepresentable. The bouncer is replaced by architecture: there is no door for troublemakers to enter.
 
 Consider a small expression language with natural numbers, booleans, arithmetic, and conditionals. We start by defining the types our language supports and a denotation function that maps them to Lean types.
 
@@ -48,7 +48,7 @@ The return type `t.denote` varies with the expression's type index. A natural nu
 
 ## Verified Optimization
 
-Interpreters become interesting when we transform programs. A constant folder simplifies expressions by evaluating constant subexpressions at compile time. Adding two literal numbers produces a literal. Conditionals with constant conditions eliminate the untaken branch.
+Interpreters become interesting when we transform programs. Compilers do this constantly: dead code elimination, loop unrolling, strength reduction. Each transformation promises to preserve meaning while improving performance. But how do we know the promise is kept? A constant folder simplifies expressions by evaluating constant subexpressions at compile time. Adding two literal numbers produces a literal. Conditionals with constant conditions eliminate the untaken branch.
 
 ```lean
 {{#include ../../src/ZeroToQED/Verification.lean:constfold}}
@@ -68,7 +68,11 @@ The theorem states that for any expression, evaluating the constant-folded expre
 
 Before we tackle the challenge of connecting proofs to production code, let us take a detour through cellular automata. Conway's Game of Life is a zero-player game that evolves on an infinite grid. Each cell is either alive or dead. At each step, cells follow simple rules: a live cell with two or three neighbors survives, a dead cell with exactly three neighbors becomes alive, and everything else dies. From these rules emerges startling complexity: oscillators, spaceships, and patterns that compute arbitrary functions.
 
-The Game of Life is an excellent verification target because we can prove properties about specific patterns without worrying about the infinite grid. We work with finite grids that wrap toroidally, which is sufficient for studying bounded patterns.
+The Game of Life is an excellent verification target because we can prove properties about specific patterns without worrying about the infinite grid. The challenge is that the true Game of Life lives on an unbounded plane, which we cannot represent directly. We need a finite approximation that preserves the local dynamics.
+
+The standard solution is a toroidal grid. Imagine taking a rectangular grid and gluing the top edge to the bottom edge, forming a cylinder. Then glue the left edge to the right edge, forming a torus. Geometrically, this is the surface of a donut. A cell at the right edge has its eastern neighbor on the left edge. A cell at the top has its northern neighbor at the bottom. Every cell has exactly eight neighbors, with no special boundary cases.
+
+This topology matters for verification. On a bounded grid with walls, edge cells would have fewer neighbors, changing their evolution rules. We would need separate logic for corners, edges, and interior cells. The toroidal topology eliminates this complexity: the neighbor-counting function is uniform across all cells. More importantly, patterns that fit within the grid and do not interact with their wrapped-around selves behave exactly as they would on the infinite plane. A 5x5 blinker on a 10x10 torus evolves identically to a blinker on the infinite grid, because the pattern never grows large enough to meet itself coming around the other side.
 
 ```lean
 {{#include ../../src/ZeroToQED/GameOfLife.lean:grid}}
@@ -100,7 +104,7 @@ Here is where theorem proving earns its keep. We can prove that the blinker osci
 
 The `native_decide` tactic does exhaustive computation. Lean evaluates the grid evolution and confirms the equality. This is not a test that runs a few cases and hopes for the best. It is a proof that covers every cell in the grid across the specified number of generations.
 
-Think about what we have accomplished. We have formally verified that a glider translates diagonally after four steps. Every cellular automaton enthusiast knows this empirically, having watched countless gliders march across their screens. But we have proven it. The glider must translate. It is not a bug that the pattern moves; it is a theorem.
+Think about what we have accomplished. We have formally verified that a glider translates diagonally after four steps. Every cellular automaton enthusiast knows this empirically, having watched countless gliders march across their screens. But we have proven it. The glider must translate. It is not a bug that the pattern moves; it is a theorem. (Readers of Greg Egan's [Permutation City](https://en.wikipedia.org/wiki/Permutation_City) may appreciate that we are now proving theorems about the computational substrate in which his characters would live.)
 
 We can also verify that the blinker conserves population, and observe that the glider does too:
 
@@ -134,7 +138,7 @@ To verify this correspondence, both systems produce execution traces. A trace re
 
 ## The Stack Machine
 
-We demonstrate this technique with a stack machine. The machine has six operations: push a value, pop the top, add the top two values, multiply the top two values, duplicate the top, and swap the top two. Despite its simplicity, the stack machine has a rich state space and non-trivial invariants around underflow detection.
+We demonstrate this technique with a stack machine, the fruit fly of computer science. Like the fruit fly in genetics, stack machines are simple enough to study exhaustively yet complex enough to exhibit interesting behavior. The machine has six operations: push a value, pop the top, add the top two values, multiply the top two values, duplicate the top, and swap the top two. Despite its simplicity, the stack machine has a rich state space and non-trivial invariants around underflow detection.
 
 The Rust implementation lives in `examples/stack-machine/`. Here is the functional core:
 
@@ -181,11 +185,11 @@ pub fn step(state: &State, op: Op) -> State {
 }
 ```
 
-The `step` function is pure despite using mutation internally. It takes a state and an operation, returns a new state. The `valid` flag tracks whether an underflow has occurred. Once invalid, the machine stays invalid regardless of subsequent operations.
+The `step` function is pure despite using mutation internally. It takes a state and an operation, returns a new state. The `valid` flag tracks whether an underflow has occurred. Once invalid, the machine stays invalid regardless of subsequent operations. This is not forgiveness; it is memory. The machine remembers its sins.
 
 ## Lean Transcription
 
-The Lean model mirrors the Rust implementation exactly. We define the same operations and state structure:
+The Lean model mirrors the Rust implementation exactly. This is not a specification written in isolation, hoping it matches the implementation. It is the implementation, translated. We define the same operations and state structure:
 
 ```lean
 {{#include ../../src/ZeroToQED/StackMachine.lean:ops}}
@@ -241,7 +245,7 @@ The Rust implementation produces identical traces. When we run the same programs
 
 ## Bisimulation Proofs
 
-Now we prove properties about specific programs. These theorems verify that the Lean model produces the expected results:
+Now we prove properties about specific programs. This is where the payoff arrives. These theorems verify that the Lean model produces the expected results:
 
 ```lean
 {{#include ../../src/ZeroToQED/StackMachine.lean:concrete_bisim}}
@@ -301,7 +305,7 @@ This technique scales to real systems. For any codebase with a functional core t
 
 ## Closing Thoughts
 
-Finding good verification examples is hard. The system must be small enough to specify cleanly, complex enough to have non-trivial properties, and simple enough that proofs are tractable. The stack machine threads this needle. Six operations, a validity flag, and stack depth create enough complexity for interesting proofs without overwhelming the verification machinery.
+Finding good verification examples is hard. The system must be small enough to specify cleanly, complex enough to have non-trivial properties, and simple enough that proofs are tractable. Too simple and the exercise is pointless; too complex and the proofs become intractable. The stack machine threads this needle. Six operations, a validity flag, and stack depth create enough complexity for interesting proofs without overwhelming the verification machinery.
 
 The `native_decide` tactic makes finite verification automatic. For any decidable property on a finite domain, Lean evaluates both sides and confirms equality. This is proof by exhaustive computation, not sampling. The limitation is that it only works for concrete inputs. Universal statements over infinite domains require structural induction.
 
