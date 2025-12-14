@@ -272,7 +272,7 @@ If you get stuck, ask yourself: what is the shape of my goal? What tactic handle
 
 You can now prove things. The proofs have been simple, but the mental model is in place. You understand goals, hypotheses, and the tactic dance that connects them. Next we introduce type theory and dependent types, the language for stating claims worth proving.
 
-## Project: The Liar's Trap
+## The Liar's Trap
 
 Try to prove something false:
 
@@ -284,7 +284,7 @@ Every tactic fails. `rfl` cannot make 0 equal 1. `simp` finds nothing to simplif
 
 This is the point. The compiler is not your collaborator; it is your adversary. It checks every step and rejects handwaving. When someone tells you their code is correct, you can ask: does it typecheck? When someone tells you their proof is valid, you can ask: did the machine accept it? The answers are not always the same, but when they are, you know something real.
 
-## Project: De Morgan's Little Theorem
+## De Morgan's Little Theorem
 
 [Augustus De Morgan](https://en.wikipedia.org/wiki/Augustus_De_Morgan) formalized the laws that bear his name in the 1850s: the negation of a conjunction is the disjunction of negations, and vice versa. Every programmer knows these laws intuitively from boolean expressions. Let us prove one.
 

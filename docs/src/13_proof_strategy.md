@@ -53,39 +53,21 @@ Tactics fall into natural categories based on what they do to the goal state. Un
 
 ## Reading the Goal
 
-Before applying any tactic, ask: what is the shape of my goal?
+Before applying any tactic, ask: what is the shape of my goal? The outermost connective determines your next move.
 
-**Implication** \\(P \to Q\\): Use `intro` to assume \\(P\\) and prove \\(Q\\).
+Goals that require building structure call for introduction tactics. If your goal is an implication \\(P \to Q\\), use `intro` to assume \\(P\\) and reduce the goal to \\(Q\\). Universal statements \\(\forall x, P(x)\\) work the same way: `intro x` gives you an arbitrary \\(x\\) and asks you to prove \\(P(x)\\). For conjunctions \\(P \land Q\\), use `constructor` to split into two subgoals. For disjunctions \\(P \lor Q\\), you must commit: `left` obligates you to prove \\(P\\), while `right` obligates you to prove \\(Q\\). Existentials \\(\exists x, P(x)\\) require a witness: `use t` provides the term \\(t\\) and leaves you to prove \\(P(t)\\).
 
-**Universal** \\(\forall x, P(x)\\): Use `intro x` to introduce \\(x\\) and prove \\(P(x)\\).
-
-**Conjunction** \\(P \land Q\\): Use `constructor` to split into two goals, one for \\(P\\) and one for \\(Q\\). Or use `And.intro` directly.
-
-**Disjunction** \\(P \lor Q\\): Use `left` to commit to proving \\(P\\), or `right` to commit to proving \\(Q\\).
-
-**Existential** \\(\exists x, P(x)\\): Use `use t` to provide a witness \\(t\\) and prove \\(P(t)\\).
-
-**Equality** \\(a = b\\): Try `rfl` if definitionally equal. Try `simp` for simplification. Try `rw` with known equalities. Try `ring` for algebraic identities.
-
-**Negation** \\(\neg P\\): Remember that \\(\neg P\\) is \\(P \to \bot\\). Use `intro h` to assume \\(P\\) and derive a contradiction.
-
-**False**: If your goal is \\(\bot\\), you need a contradiction. Look for hypotheses that conflict.
+Goals that are equations or basic facts call for different tactics. For equality \\(a = b\\), try `rfl` if the terms are definitionally equal, `simp` for simplification, `rw` with known equalities, or `ring` for algebraic identities. Negation \\(\neg P\\) is secretly an implication: since \\(\neg P\\) means \\(P \to \bot\\), you use `intro h` to assume \\(P\\) and then derive a contradiction. If your goal is \\(\bot\\) itself, you need to find conflicting hypotheses.
 
 ## Reading the Context
 
-Your context contains hypotheses. Each hypothesis is a tool. Ask: what can I do with each hypothesis?
+Your context contains hypotheses. Each one is a tool waiting to be used. The shape of a hypothesis determines what you can do with it.
 
-**Implication** \\(h : P \to Q\\): If you can prove \\(P\\), you can get \\(Q\\). Use `apply h` when your goal is \\(Q\\). Use `have hq := h hp` when you have `hp : P`.
+Hypotheses that provide conditional information let you make progress when you can satisfy their conditions. An implication \\(h : P \to Q\\) gives you \\(Q\\) if you can prove \\(P\\). When your goal is \\(Q\\), use `apply h` to reduce it to proving \\(P\\). A universal \\(h : \forall x, P(x)\\) can be instantiated at any term: `specialize h t` replaces \\(h\\) with \\(P(t)\\), or `have ht := h t` keeps the original.
 
-**Universal** \\(h : \forall x, P(x)\\): You can instantiate at any term. Use `specialize h t` to get \\(P(t)\\). Use `have ht := h t` to keep the original.
+Hypotheses that package multiple facts can be taken apart. A conjunction \\(h : P \land Q\\) gives you both pieces: access them with `h.1` and `h.2`, or destructure with `obtain ⟨hp, hq⟩ := h`. An existential \\(h : \exists x, P(x)\\) packages a witness and a proof: `obtain ⟨x, hx⟩ := h` extracts both. A disjunction \\(h : P \lor Q\\) requires case analysis since you do not know which side holds: `cases h` splits your proof into two branches.
 
-**Conjunction** \\(h : P \land Q\\): You have both \\(P\\) and \\(Q\\). Access them with `h.1` and `h.2`, or use `obtain ⟨hp, hq⟩ := h` to destructure.
-
-**Disjunction** \\(h : P \lor Q\\): You have either \\(P\\) or \\(Q\\) but do not know which. Use `cases h` to split into cases.
-
-**Existential** \\(h : \exists x, P(x)\\): There is some \\(x\\) satisfying \\(P\\). Use `obtain ⟨x, hx⟩ := h` to get the witness and its property.
-
-**Equality** \\(h : a = b\\): You can substitute \\(b\\) for \\(a\\). Use `rw [h]` to rewrite left-to-right. Use `rw [← h]` to rewrite right-to-left.
+An equality \\(h : a = b\\) lets you substitute. Use `rw [h]` to replace \\(a\\) with \\(b\\) in your goal, or `rw [← h]` to go the other direction.
 
 ## Proof Patterns
 

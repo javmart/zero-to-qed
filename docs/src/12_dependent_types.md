@@ -33,11 +33,15 @@ Dependent types are the solution. They let types talk about values. The type `Ve
 
 ## Type System Overview
 
-Lean's type system supports definitional equality through several reduction rules:
-- **β-reduction** (beta): Function application through substitution - \\((\\lambda x. t) s \\equiv t[s/x]\\)
-- **δ-reduction** (delta): Replacement of defined constants with definitions
-- **ι-reduction** (iota): Reduction when recursors target constructors
-- **ζ-reduction** (zeta): Substitution of let-bound variables - \\(\\text{let } x := s \\text{ in } t \\equiv t[s/x]\\)
+Lean's type system supports definitional equality through several reduction rules. Two terms are definitionally equal when one reduces to the other, and the type checker treats them as interchangeable without proof.
+
+**Beta reduction** (\\(\beta\\)) is function application. When you apply \\((\lambda x. t)\\) to an argument \\(s\\), the result is \\(t\\) with \\(s\\) substituted for \\(x\\). This is the computational heart of the lambda calculus.
+
+**Delta reduction** (\\(\delta\\)) unfolds definitions. When you define `def f x := x + 1`, any occurrence of `f 3` can be replaced with `3 + 1`. The type checker sees through your naming conventions.
+
+**Iota reduction** (\\(\iota\\)) handles pattern matching on inductive types. When a recursor meets a constructor, the match fires and computation proceeds. This is how `Nat.rec` applied to `Nat.succ n` knows to take the successor branch.
+
+**Zeta reduction** (\\(\zeta\\)) substitutes let-bound variables. The expression \\(\\text{let } x := s \\text{ in } t\\) reduces to \\(t[s/x]\\). Local definitions are just convenient names.
 
 ```lean
 {{#include ../../src/ZeroToQED/TypeTheory.lean:type_system_overview}}
