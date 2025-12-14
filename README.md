@@ -1,6 +1,4 @@
-<p align="center">
-  <img src=".github/beaver.png" alt="Zero to QED" width="180">
-</p>
+<img src=".github/beaver.png" alt="Zero to QED" width="240">
 
 # From Zero to QED
 
