@@ -4,7 +4,7 @@ import Std.Data.HashSet
 /-!
 # Basics of Lean 4
 
-This module covers the fundamental concepts of Lean 4.
+Fundamental concepts of Lean 4.
 -/
 
 namespace ZeroToQED.Basics

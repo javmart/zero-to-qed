@@ -3,8 +3,7 @@ import Mathlib.Tactic
 /-!
 # Proofs
 
-This module introduces the basics of proving in Lean, bridging the gap
-between programming and theorem proving.
+Basics of proving in Lean, bridging the gap between programming and theorem proving.
 -/
 
 namespace ZeroToQED.Proving

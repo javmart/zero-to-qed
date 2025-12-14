@@ -1,9 +1,9 @@
 /-
 # Stack Machine Verification
 
-This module demonstrates verification-guided development following the Cedar approach.
-We transcribe a Rust implementation into Lean, prove properties about the Lean model,
-and the proofs transfer because both systems produce identical execution traces.
+Verification-guided development following the Cedar approach. A Rust implementation
+is transcribed into Lean, properties are proven about the Lean model, and proofs
+transfer because both systems produce identical execution traces.
 -/
 
 namespace StackMachine

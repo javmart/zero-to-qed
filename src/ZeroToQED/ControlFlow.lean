@@ -1,7 +1,7 @@
 /-!
 # Control Flow, Recursion, Structures, and Inductive Types
 
-This module covers control flow patterns, recursion, and user-defined types.
+Control flow patterns, recursion, and user-defined types.
 -/
 
 namespace ZeroToQED.ControlFlow

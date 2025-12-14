@@ -3,8 +3,8 @@ import Mathlib.Tactic.NormNum
 /-!
 # Type Theory in Lean
 
-This module explores Lean's type system based on dependent type theory,
-incorporating concepts from the official Lean 4 language reference.
+Lean's type system based on dependent type theory, incorporating concepts
+from the official Lean 4 language reference.
 -/
 
 namespace ZeroToQED.TypeTheory
