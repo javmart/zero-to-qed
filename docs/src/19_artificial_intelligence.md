@@ -35,5 +35,21 @@ Jump in.
 - [LeanDojo](https://leandojo.org/): ML infrastructure for theorem proving
 - [Lean Copilot](https://github.com/lean-dojo/LeanCopilot): Neural inference in Lean
 
+**Interactive Proving with MCP**
+
+The [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) standardizes how AI assistants interact with external tools. For theorem proving, this means LLMs can read goal states, query for relevant lemmas, and build proofs interactively rather than generating them blind. The [lean-lsp-mcp](https://github.com/oOo0oOo/lean-lsp-mcp) server exposes Lean's language server to AI agents, enabling access to diagnostics, goal states, hover documentation, and search tools like Loogle and LeanSearch.
+
+> [!TIP]
+> **Setup for Claude Code** (run in your Lean project root):
+> ```bash
+> claude mcp add lean-lsp uvx lean-lsp-mcp
+> ```
+> **Setup for Cursor/VS Code** (add to MCP settings):
+> ```json
+> { "mcpServers": { "lean-lsp": { "command": "uvx", "args": ["lean-lsp-mcp"] } } }
+> ```
+> Requires [uv](https://github.com/astral-sh/uv) package manager. Run `lake build` before starting.
+
 **Tools**
+- [lean-lsp-mcp](https://github.com/oOo0oOo/lean-lsp-mcp): MCP server for Lean interaction
 - [LeanExplore](https://leanexplore.com/): Semantic search across Mathlib

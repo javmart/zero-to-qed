@@ -53,5 +53,5 @@ target/
 # Outputs
 *.html
 
-*.md
+#*.md
 docs/combined.md

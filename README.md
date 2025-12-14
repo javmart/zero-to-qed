@@ -25,12 +25,12 @@ A best-effort knowledge transfer for learning Lean 4 the hard way.
 | 9 | [IO and Concurrency](docs/src/09_effects.md) | [Effects.lean](src/ZeroToQED/Effects.lean) |
 | 10 | [Proofs](docs/src/10_proving.md) | [Proving.lean](src/ZeroToQED/Proving.lean) |
 | 11 | [Type Theory](docs/src/11_type_theory.md) | [TypeTheory.lean](src/ZeroToQED/TypeTheory.lean) |
-| 12 | [Dependent Types](docs/src/12_dependent_types.md) | |
-| 13 | [Proof Strategy](docs/src/13_proof_strategy.md) | |
+| 12 | [Dependent Types](docs/src/12_dependent_types.md) | [DependentTypes.lean](src/ZeroToQED/DependentTypes.lean) |
+| 13 | [Proof Strategy](docs/src/13_proof_strategy.md) | [ProofStrategy.lean](src/ZeroToQED/ProofStrategy.lean) |
 | 14 | [Tactics](docs/src/14_tactics.md) | [Tactics.lean](src/ZeroToQED/Tactics.lean) |
 | 15 | [Subtyping](docs/src/15_subtyping.md) | [Subtyping.lean](src/ZeroToQED/Subtyping.lean) |
 | 16 | [Mathematics](docs/src/16_mathematics.md) | [Mathematics.lean](src/ZeroToQED/Mathematics.lean) |
-| 17 | [Mathlib](docs/src/17_mathlib.md) | |
+| 17 | [Mathlib](docs/src/17_mathlib.md) | [Mathlib.lean](src/ZeroToQED/Mathlib.lean) |
 | 18 | [Verification](docs/src/18_verification.md) | [Verification.lean](src/ZeroToQED/Verification.lean), [GameOfLife.lean](src/ZeroToQED/GameOfLife.lean), [StackMachine.lean](src/ZeroToQED/StackMachine.lean) |
 | 19 | [AI](docs/src/19_artificial_intelligence.md) | |
 | 20 | [References](docs/src/20_references.md) | |

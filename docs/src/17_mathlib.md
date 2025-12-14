@@ -1,8 +1,8 @@
 # Mathlib
 
-[Mathlib](https://github.com/leanprover-community/mathlib4) is the mathematical library for Lean 4. It contains over a million lines of formalized mathematics, from basic logic through graduate-level algebra, analysis, and number theory. When you import Mathlib in your project, you gain access to thousands of theorems, definitions, and tactics developed by hundreds of contributors. Understanding its structure helps you find what you need and write code that integrates cleanly with the ecosystem.
+[Mathlib](https://github.com/leanprover-community/mathlib4) is the mathematical library for Lean 4. Over a million lines of formalized mathematics, from basic logic through graduate-level algebra, analysis, and number theory. Hundreds of contributors have poured years of work into this thing. When you import it, you inherit their labor. The triangle inequality is already proven. So is the fundamental theorem of algebra. You do not need to prove that primes are infinite; someone did that in 2017 and you can just use it.
 
-The library is organized hierarchically. At the foundation sit logic, sets, and basic data types. Above these rise algebraic structures, then topology and analysis, then specialized domains like combinatorics and number theory. Each layer builds on those below. The [Mathlib documentation](https://leanprover-community.github.io/mathlib4_docs/) provides searchable API references for every module.
+The library is organized hierarchically, which is a polite way of saying "good luck finding anything without help." At the foundation sit logic, sets, and basic data types. Above these rise algebraic structures, then topology and analysis, then specialized domains like combinatorics and number theory. Each layer builds on those below. The [Mathlib documentation](https://leanprover-community.github.io/mathlib4_docs/) provides searchable API references, though "searchable" is doing some heavy lifting in that sentence.
 
 ## Core Foundations
 
@@ -68,17 +68,15 @@ Abstract structures and discrete mathematics.
 
 ## Finding What You Need
 
-Mathlib is large. These strategies help you navigate it.
+Mathlib is large. You will spend more time searching for lemmas than proving theorems, at least at first. Accept this. The good news is that the lemma you need almost certainly exists. The bad news is that it might be named something you would never guess.
 
-**In-editor search**: The `exact?` tactic searches for lemmas that exactly match your goal. The `apply?` tactic finds lemmas whose conclusion unifies with your goal.
+**In-editor search**: The `exact?` tactic searches for lemmas that exactly match your goal. The `apply?` tactic finds lemmas whose conclusion unifies with your goal. These are your best friends. Use them constantly.
 
-**Pattern search**: [Loogle](https://loogle.lean-lang.org/) searches Mathlib by type signature. If you need a lemma about `List.map` and `List.length`, search for `List.map, List.length` and find `List.length_map`.
+**Pattern search**: [Loogle](https://loogle.lean-lang.org/) searches Mathlib by type signature. If you need a lemma about `List.map` and `List.length`, search for `List.map, List.length` and find `List.length_map`. This works better than it sounds.
 
-**Natural language search**: [Moogle](https://www.moogle.ai/) uses semantic search to find lemmas from natural language queries. Ask "triangle inequality for norms" and find `norm_add_le`.
+**Natural language search**: [Moogle](https://www.moogle.ai/) uses semantic search to find lemmas from natural language queries. Ask "triangle inequality for norms" and find `norm_add_le`. Sometimes it even understands what you meant rather than what you typed.
 
-**Naming conventions**: Mathlib follows predictable naming. A lemma about `add` and `comm` is likely named `add_comm`. A lemma about `mul`, `zero`, and the left side is `mul_zero` or `zero_mul`. Once you internalize the pattern, you can often guess lemma names.
-
-**Module structure**: If you need facts about prime numbers, look in `Mathlib.Data.Nat.Prime`. If you need topology lemmas, start in `Mathlib.Topology`. The [Mathematics in Mathlib](https://leanprover-community.github.io/mathlib-overview.html) overview provides a comprehensive map of what is formalized and where to find it.
+**Module structure**: If you need facts about prime numbers, look in `Mathlib.Data.Nat.Prime`. If you need topology lemmas, start in `Mathlib.Topology`. The [Mathematics in Mathlib](https://leanprover-community.github.io/mathlib-overview.html) overview provides a map of what has been formalized and where. When all else fails, grep the source code like everyone else does.
 
 ## Importing Mathlib
 
@@ -88,11 +86,73 @@ Most projects import Mathlib wholesale:
 import Mathlib
 ```
 
-For faster compilation during development, import only what you need:
+This works, but your compile times will make you reconsider your life choices. For faster iteration during development, import only what you need:
 
 ```lean
-import Mathlib.Data.Nat.Prime.Basic
-import Mathlib.Tactic.Linarith
+{{#include ../../src/ZeroToQED/Mathlib.lean:mathlib_imports}}
 ```
 
-The [Mathlib documentation](https://leanprover-community.github.io/mathlib4_docs/) lists all available modules. When your proof needs a specific lemma, check which module provides it and add that import.
+The [Mathlib documentation](https://leanprover-community.github.io/mathlib4_docs/) lists all available modules. When your proof needs a specific lemma, check which module provides it and add that import. Or just import everything and go make coffee while it compiles.
+
+## Working with Primes
+
+Number theory in Mathlib is surprisingly pleasant. The basics are all there, and the proofs often look like what you would write on paper if paper could check your work:
+
+```lean
+{{#include ../../src/ZeroToQED/Mathlib.lean:prime_example}}
+```
+
+## Algebraic Structures
+
+Type classes do the heavy lifting here. Declare that your type is a group, and you get inverses, identity laws, and associativity for free. Declare it is a ring, and multiplication distributes over addition without you lifting a finger:
+
+```lean
+{{#include ../../src/ZeroToQED/Mathlib.lean:algebra_example}}
+```
+
+## Real Numbers
+
+The reals are constructed as equivalence classes of Cauchy sequences, which is mathematically clean but occasionally leaks through the abstraction when you least expect it. Most of the time you can pretend they are just numbers:
+
+```lean
+{{#include ../../src/ZeroToQED/Mathlib.lean:real_example}}
+```
+
+## Mathlib Tactics
+
+Mathlib ships tactics that know more mathematics than most undergraduates. `ring` closes polynomial identities. `linarith` handles linear arithmetic over ordered rings. `positivity` proves things are positive. These are not magic; they are carefully engineered decision procedures. But from the outside, they look like magic:
+
+```lean
+{{#include ../../src/ZeroToQED/Mathlib.lean:tactic_example}}
+```
+
+## Using Search Tools
+
+When stuck, let the computer do the searching. `exact?` trawls through Mathlib looking for a lemma that exactly matches your goal. `apply?` finds lemmas whose conclusion fits. These tactics are slow, but they beat staring at the screen trying to remember if the lemma is called `add_comm` or `comm_add`:
+
+```lean
+{{#include ../../src/ZeroToQED/Mathlib.lean:search_example}}
+```
+
+## The Fundamental Theorem of Calculus
+
+Remember the [Fundamental Theorem of Calculus](https://leanprover-community.github.io/mathlib4_docs/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.html) from high school? The one that says the integral of a derivative gives you back the original function, evaluated at the endpoints? That theorem you memorized, used on exams, and maybe wondered if it was actually true or just something teachers said?
+
+$$\int_a^b f'(x) \, dx = f(b) - f(a)$$
+
+It is proven in Mathlib. All of it. This statement is a theorem you can import and use. The proof handles all the edge cases your calculus teacher glossed over: measurability, integrability, what happens at the boundary points. Centuries of mathematical refinement, compressed into something a computer can check.
+
+```lean
+import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
+
+open MeasureTheory Set
+
+-- The second fundamental theorem of calculus: ∫ f' = f(b) - f(a)
+example (f f' : ℝ → ℝ) (a b : ℝ)
+    (hf : ∀ x ∈ uIcc a b, HasDerivAt f (f' x) x)
+    (hf' : IntervalIntegrable f' volume a b) :
+    ∫ x in a..b, f' x = f b - f a :=
+  intervalIntegral.integral_eq_sub_of_hasDerivAt hf hf'
+```
+
+That is high school calculus, machine-verified. The gap between "this seems true" and "this is proven" turns out to be about four lines of Lean.
