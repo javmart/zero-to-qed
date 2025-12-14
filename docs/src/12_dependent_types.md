@@ -7,7 +7,7 @@ Dependent types are the solution. They let types talk about values. The type `Ve
 [Per Martin-Löf](https://en.wikipedia.org/wiki/Per_Martin-L%C3%B6f) spent the 1970s in Sweden developing this type theory where types could depend on values, not just on other types. The idea seems simple enough: if `List` can be parameterized by an element type, why not also by its length? But this small step has profound consequences. Suddenly types become a specification language. A function returning `Vector α n` does not merely return a list; it returns a list of exactly `n` elements, verified at compile time. The [simply-typed lambda calculus](https://en.wikipedia.org/wiki/Simply_typed_lambda_calculus) that underlies Haskell and ML stops at the water's edge here. Dependent types let you wade in, expressing invariants that would otherwise live only in documentation or runtime checks. Lean's type system, based on the [Calculus of Inductive Constructions](https://en.wikipedia.org/wiki/Calculus_of_constructions), provides the full machinery: types that compute, proofs that are programs, and specifications precise enough to replace testing with theorem proving.
 
 > [!WARNING]
-> This section is dense and notation-heavy. If the mathematical symbols start to blur together, that is not a personal failing - it is the appropriate response to notation that took logicians fifty years to stabilize and still varies between textbooks. Skip ahead and return later. Or don't. Some people read this material linearly, some spiral in from the edges, some open to random pages and see what sticks. There is no wrong way to learn type theory except to believe you should have understood it faster. The notation table below is a reference, not a prerequisite.
+> This section is dense and notation-heavy. If the mathematical symbols start to blur together, that is not a personal failing. It is the appropriate response to notation that took logicians fifty years to stabilize and still varies between textbooks. Skip ahead and return later. Or don't. Some people read this material linearly, some spiral in from the edges, some open to random pages and see what sticks. There is no wrong way to learn type theory except to believe you should have understood it faster. The notation table below is a reference, not a prerequisite.
 
 ## Notation
 
@@ -45,7 +45,7 @@ Lean's type system supports definitional equality through several reduction rule
 
 ## Functions
 
-Function types are a built-in feature of Lean. Functions map values from one type (the domain) to another type (the codomain). In Lean's core language, **all function types are dependent** - non-dependent function types are just a special case where the parameter doesn't appear in the codomain.
+Function types are a built-in feature of Lean. Functions map values from one type (the domain) to another type (the codomain). In Lean's core language, **all function types are dependent**. Non-dependent function types are just a special case where the parameter does not appear in the codomain.
 
 ### Non-Dependent vs Dependent Functions
 
@@ -106,7 +106,7 @@ The power of currying lies in its composability. You can create specialized func
 
 ### Function Extensionality
 
-Function extensionality is a fundamental principle stating that two functions are equal if and only if they produce equal outputs for all equal inputs. This principle, while intuitively obvious, is not derivable from the other axioms of dependent type theory and must be added as an axiom in Lean. Without extensionality, we could only prove functions equal if they were syntactically identical - the same symbols in the same order.
+Function extensionality is a fundamental principle stating that two functions are equal if and only if they produce equal outputs for all equal inputs. This principle, while intuitively obvious, is not derivable from the other axioms of dependent type theory and must be added as an axiom in Lean. Without extensionality, we could only prove functions equal if they were syntactically identical: the same symbols in the same order.
 
 The `funext` tactic in Lean implements this principle, allowing us to prove function equality by considering their behavior pointwise. This is essential for mathematical reasoning, where we often want to show that two different definitions actually describe the same function. The principle extends to dependent functions as well, where the output type can vary with the input.
 
@@ -117,7 +117,7 @@ The `funext` tactic in Lean implements this principle, allowing us to prove func
 ### Totality and Termination
 
 > [!IMPORTANT]
-> All functions in Lean must be total - defined for every possible input of the correct type. This requirement ensures logical consistency: a function that could fail or loop forever would make Lean's logic unsound. Partiality is the enemy. The function that hangs on edge cases, the recursion that never terminates, the match that forgot a constructor - these are not just bugs but logical contradictions waiting to invalidate your theorems.
+> All functions in Lean must be total, meaning they must be defined for every possible input of the correct type. This requirement ensures logical consistency: a function that could fail or loop forever would make Lean's logic unsound. Partiality is the enemy. The function that hangs on edge cases, the recursion that never terminates, the match that forgot a constructor: these are not just bugs but logical contradictions waiting to invalidate your theorems.
 
 To achieve totality while allowing recursion, Lean uses well-founded recursion based on decreasing measures.
 
@@ -131,7 +131,7 @@ For structural recursion on inductive types, Lean automatically proves terminati
 
 Lean's standard library provides a rich collection of function combinators in the `Function` namespace. These combinators, familiar from functional programming, enable point-free style and function composition. The composition operator `∘` allows building complex functions from simpler ones, while combinators like `const`, `flip`, and `id` provide basic building blocks for function manipulation.
 
-Function composition in Lean satisfies the expected mathematical properties: it's associative, and the identity function acts as a neutral element. These properties are not just theorems but computational facts - they hold definitionally, meaning Lean can verify them by pure computation without requiring proof steps.
+Function composition in Lean satisfies the expected mathematical properties: it is associative, and the identity function acts as a neutral element. These properties are not just theorems but computational facts. They hold definitionally, meaning Lean can verify them by pure computation without requiring proof steps.
 
 ```lean
 {{#include ../../src/ZeroToQED/TypeTheory.lean:functions_api}}
@@ -139,7 +139,7 @@ Function composition in Lean satisfies the expected mathematical properties: it'
 
 ### Function Properties
 
-Mathematical properties of functions - injectivity, surjectivity, and bijectivity - play crucial roles in both mathematics and computer science. An injective function maps distinct inputs to distinct outputs, a surjective function reaches every possible output, and a bijective function is both injective and surjective, establishing a one-to-one correspondence between domain and codomain.
+Mathematical properties of functions (injectivity, surjectivity, and bijectivity) play crucial roles in both mathematics and computer science. An injective function maps distinct inputs to distinct outputs, a surjective function reaches every possible output, and a bijective function is both injective and surjective, establishing a one-to-one correspondence between domain and codomain.
 
 These properties connect to the concept of inverses. A function has a left inverse if and only if it's injective, a right inverse if and only if it's surjective, and a two-sided inverse if and only if it's bijective. Lean provides definitions and theorems for reasoning about these properties, enabling formal verification of mathematical and algorithmic correctness.
 

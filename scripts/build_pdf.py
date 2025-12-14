@@ -92,6 +92,19 @@ def convert_math(content: str) -> str:
     return content
 
 
+def escape_link_underscores(content: str) -> str:
+    """Escape underscores in markdown link URLs to prevent LaTeX subscript interpretation."""
+    # Match markdown links: [text](url)
+    def escape_url(match):
+        text = match.group(1)
+        url = match.group(2)
+        # Escape underscores in the URL
+        escaped_url = url.replace('_', r'\_')
+        return f'[{text}]({escaped_url})'
+
+    return re.sub(r'\[([^\]]+)\]\(([^)]+)\)', escape_url, content)
+
+
 def convert_callouts(content: str) -> str:
     """Convert mdbook callouts to LaTeX environments."""
     # > [!NOTE] -> \begin{note}...\end{note}
@@ -156,6 +169,7 @@ def preprocess_markdown(filepath: Path) -> str:
     content = expand_includes(content, filepath.parent)
     content = convert_math(content)
     content = convert_callouts(content)
+    content = escape_link_underscores(content)
     return content
 
 

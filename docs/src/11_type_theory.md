@@ -36,7 +36,7 @@ The practical experience differs from conventional programming. Types become mor
 
 ## Universes and Russell's Paradox
 
-When you write `universe u v w` in Lean, you are declaring universe level variables. If that sentence meant nothing to you, good - it shouldn't yet. But why do universes exist at all? The answer involves one of the most famous disasters in the history of mathematics, a polite letter that ended a career, and the dawning realization that self-reference is the serpent in every formal garden.
+When you write `universe u v w` in Lean, you are declaring universe level variables. If that sentence meant nothing to you, good. It should not mean anything yet. But why do universes exist at all? The answer involves one of the most famous disasters in the history of mathematics, a polite letter that ended a career, and the dawning realization that self-reference is the serpent in every formal garden.
 
 In 1901, [Bertrand Russell](https://en.wikipedia.org/wiki/Russell%27s_paradox) sent a letter to Gottlob Frege, who had just completed his life's work: a logical foundation for all of mathematics. Russell's letter contained a single question. Consider the set R of all sets that do not contain themselves. Does R contain itself? If yes, then by definition it should not. If no, then by definition it should. Frege's system was inconsistent. His life's work collapsed. He wrote back: "Hardly anything more unfortunate can befall a scientific writer than to have one of the foundations of his edifice shaken after the work is finished."
 
