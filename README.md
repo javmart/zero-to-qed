@@ -1,5 +1,5 @@
 <p align="center">
-  <img src=".github/beaver.png" alt="Zero to QED" width="160">
+  <img src=".github/beaver.png" alt="Zero to QED" width="180">
 </p>
 
 <h1 align="center">From Zero to QED</h1>
