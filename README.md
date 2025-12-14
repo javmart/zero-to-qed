@@ -1,6 +1,12 @@
-# From Zero to QED
+<p align="center">
+  <img src=".github/beaver.png" alt="Zero to QED" width="160">
+</p>
 
-*An informal introduction to formality in Lean 4.*
+<h1 align="center">From Zero to QED</h1>
+
+<p align="center">
+  <em>An informal introduction to formality in Lean 4.</em>
+</p>
 
 ## Read
 
