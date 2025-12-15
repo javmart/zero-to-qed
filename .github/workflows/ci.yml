@@ -51,21 +51,22 @@ jobs:
       - name: Build mdBook documentation
         run: cd docs && mdbook build
 
-      - name: Install PDF dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y pandoc texlive-xetex texlive-fonts-recommended texlive-fonts-extra
-
-      - name: Build PDF
-        continue-on-error: true
-        run: |
-          python3 scripts/build_pdf.py
-          if [ -f "docs/zero-to-qed.pdf" ]; then
-            mv docs/zero-to-qed.pdf docs/book/zero-to-qed.pdf
-            echo "PDF built successfully"
-          else
-            echo "PDF build failed, continuing without PDF"
-          fi
+      # PDF build disabled for faster CI
+      # - name: Install PDF dependencies
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install -y pandoc texlive-xetex texlive-fonts-recommended texlive-fonts-extra
+      #
+      # - name: Build PDF
+      #   continue-on-error: true
+      #   run: |
+      #     python3 scripts/build_pdf.py
+      #     if [ -f "docs/zero-to-qed.pdf" ]; then
+      #       mv docs/zero-to-qed.pdf docs/book/zero-to-qed.pdf
+      #       echo "PDF built successfully"
+      #     else
+      #       echo "PDF build failed, continuing without PDF"
+      #     fi
 
       - name: List generated files
         run: |
