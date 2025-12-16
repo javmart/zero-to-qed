@@ -44,21 +44,19 @@ Safety properties are tractable:
 {{#include ../../src/ZeroToQED/Auction.lean:auction_safety}}
 ```
 
-The open problem is **incentive compatibility**: proving that truthful bidding is optimal. A mechanism is dominant-strategy incentive compatible (DSIC) if no bidder can improve their outcome by misreporting their true value, regardless of what others do.
+The open problem is **incentive compatibility**: proving that truthful bidding is optimal.
 
 ```lean
 {{#include ../../src/ZeroToQED/Auction.lean:auction_open}}
 ```
 
-This is where mechanism design meets dependent types. The [Vickrey-Clarke-Groves](https://en.wikipedia.org/wiki/Vickrey%E2%80%93Clarke%E2%80%93Groves_mechanism) (VCG) mechanism is the textbook solution: each participant pays the externality they impose on others, making truthful bidding a dominant strategy. The second-price auction is the simplest VCG instance. You bid your true value because winning at your bid costs you exactly what you would have paid anyway, and shading your bid only risks losing an auction you should have won. The math is elegant and the incentives are aligned.
+The [Vickrey-Clarke-Groves mechanism](https://en.wikipedia.org/wiki/Vickrey%E2%80%93Clarke%E2%80%93Groves_mechanism) is the textbook solution for single-item auctions: charge each winner the externality they impose on others, and truthful bidding becomes dominant strategy. But combinatorial auctions break this. When bidders want bundles of items and bundles overlap, winner determination becomes NP-hard. VCG requires solving this optimally, which is computationally intractable. It is also not budget-balanced: the mechanism may pay out more than it collects. Real exchanges use uniform-price batch auctions instead, trading exact incentive compatibility for tractability.
 
-But VCG has problems in practice. It is not budget-balanced: the auctioneer may collect less than they pay out, or vice versa. It requires solving the winner determination problem optimally, which is NP-hard for combinatorial auctions. And it is vulnerable to collusion and shill bidding in ways that uniform-price auctions are not. Real exchanges use uniform-price batch auctions, which sacrifice exact incentive compatibility for computational tractability and budget balance. The open problem is characterizing exactly how much manipulation is possible and proving bounds on strategic gain.
+Here is the concrete problem: **bound the strategic gain from misreporting in a uniform-price combinatorial auction**. Define a bidder's regret as the difference between their utility under optimal manipulation and their utility under truthful bidding. Prove an upper bound on regret as a function of market thickness (number of participants) and bundle complexity (overlap structure). The conjecture is that regret goes to zero as markets get large and competitive, but no formal proof exists.
 
-Formalizing this in Lean requires expressing "for all alternative bids, utility does not increase" as a dependent type, then proving it holds. The quantification over counterfactual bids is where the difficulty lives. This is genuinely open research at the intersection of mechanism design and formal verification.
+Formalizing this requires expressing "for all alternative bids, utility improvement is bounded by \\(f(n, k)\\)" as a dependent type. The quantification over counterfactual strategies is where the difficulty lives.
 
-The intersection of neural theorem proving and auction theory is also wide open. Interesting things happen when you point AI at mechanism design.
-
-If you have worked your way to the end of this article, you are exactly the kind of person we want to talk to. [OneChronos](https://www.onechronos.com/) builds verified auction infrastructure for financial markets. We work on exactly these problems: combinatorial auctions, mechanism design, formal verification of trading systems. If formalizing incentive compatibility sounds like fun rather than work, reach out to [OneChronos careers](https://www.onechronos.com/careers/) or to me directly: [Stephen Diehl](mailto:sdiehl@onechronos.com).
+If this sounds interesting, [OneChronos](https://www.onechronos.com/) builds verified auction infrastructure for financial markets. We work on combinatorial auctions, mechanism design, and formal verification of trading systems. Apply through [our careers page](https://www.onechronos.com/careers/) or [reach out to me](mailto:sdiehl@onechronos.com) directly.
 
 ---
 
@@ -75,7 +73,7 @@ If you have worked your way to the end of this article, you are exactly the kind
 
 **Interactive Proving with MCP**
 
-The [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) standardizes how AI assistants interact with external tools. For theorem proving, this means LLMs can read goal states, query for relevant lemmas, and build proofs interactively rather than generating them blind. The [lean-lsp-mcp](https://github.com/oOo0oOo/lean-lsp-mcp) server exposes Lean's language server to AI agents, enabling access to diagnostics, goal states, hover documentation, and search tools like Loogle and LeanSearch.
+The [Model Context Protocol](https://modelcontextprotocol.io/) standardizes how AI assistants interact with external tools. For theorem proving, this means LLMs can read goal states, query for relevant lemmas, and build proofs interactively rather than generating them blind. The [lean-lsp-mcp](https://github.com/oOo0oOo/lean-lsp-mcp) server exposes Lean's language server to AI agents, enabling access to diagnostics, goal states, hover documentation, and search tools like Loogle and LeanSearch.
 
 > [!TIP]
 > **Setup for Claude Code** (run in your Lean project root):
