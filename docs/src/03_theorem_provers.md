@@ -2,7 +2,7 @@
 
 *This article covers the landscape of theorem provers and why Lean won. If you do not care about context, skip to [Basics](./05_basics.md).*
 
-Theorem provers have existed since the 1960s. Most of them failed to escape academia. A few succeeded spectacularly. Understanding why some won and others lost clarifies what makes Lean different.
+Theorem provers have existed since the 1960s. Most of them failed to escape academia. A few succeeded. Understanding why some won and others lost clarifies what makes Lean different.
 
 ## The Graveyard
 
@@ -36,7 +36,7 @@ Lean 4 shipped in 2021 as a ground-up rewrite. Several things went right:
 
 ## The Also-Rans
 
-**[Agda](https://en.wikipedia.org/wiki/Agda_(programming_language))** is beautiful. Its dependent pattern matching influenced Lean's design. It supports cubical type theory for people who care about homotopy. But Agda has no substantial mathematical library, which means every project starts from scratch. It remains a research vehicle.
+**[Agda](https://en.wikipedia.org/wiki/Agda_(programming_language))** has elegant syntax. Its dependent pattern matching influenced Lean's design. It supports cubical type theory for people who care about homotopy. But Agda has no substantial mathematical library, which means every project starts from scratch. It remains a research vehicle.
 
 **[Idris](https://en.wikipedia.org/wiki/Idris_(programming_language))** pioneered practical dependent types for programming. Many of its ergonomic ideas appear in Lean 4. But Idris 2 is maintained by essentially one person, and there is no community building a shared library. It is a glimpse of a future that Lean is actually building.
 
@@ -44,7 +44,7 @@ Lean 4 shipped in 2021 as a ground-up rewrite. Several things went right:
 
 ## The Bottom Line
 
-Lean won for the same reason Python won: it was good enough technically and better socially. The syntax is approachable. The tooling is modern. The library is massive. The community is active. When a Fields medalist and a trading firm and an AI lab all independently choose the same tool, something real is happening.
+Lean won for the same reason Python won: it was good enough technically and better socially. The syntax is approachable. The tooling is modern. The library is massive. The community is active. When a Fields medalist, quant firms and AI labs all independently choose the same tool, that tells you something.
 
 If you are starting today, start with Lean. The alternatives are not wrong, but they are lonelier.
 
