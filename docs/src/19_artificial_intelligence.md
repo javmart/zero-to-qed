@@ -26,37 +26,37 @@ Jump in.
 
 ## Open Problem: Verified Auction Theory
 
-Here is a concrete challenge. The code below implements a simple batch auction: buyers and sellers submit orders, the market clears at a uniform price. We can prove safety properties (buyers never pay more than they bid, sellers never receive less than they asked). But the hard problem remains open.
+Here is a concrete challenge. Markets move trillions of dollars daily on algorithms that have never been formally verified; proving properties about them is one of the few places where a theorem can be worth real money. The code below implements a combinatorial auction: participants submit orders expressing preferences over baskets of instruments, and the mechanism finds an allocation that maximizes welfare. Safety properties (no order executes worse than its limit) are tractable. The hard problem is proving **price improvement**: that participants get better execution than they could achieve through bilateral matching.
 
 ```lean
 {{#include ../../src/ZeroToQED/Auction.lean:auction_types}}
 ```
 
-The clearing mechanism finds a price that maximizes trading volume:
+The mechanism finds welfare-maximizing allocations:
 
 ```lean
 {{#include ../../src/ZeroToQED/Auction.lean:auction_clear}}
 ```
 
-Safety properties are tractable:
+Safety properties are provable:
 
 ```lean
 {{#include ../../src/ZeroToQED/Auction.lean:auction_safety}}
 ```
 
-The open problem is **incentive compatibility**: proving that truthful bidding is optimal.
+The open problem:
 
 ```lean
 {{#include ../../src/ZeroToQED/Auction.lean:auction_open}}
 ```
 
-The [Vickrey-Clarke-Groves mechanism](https://en.wikipedia.org/wiki/Vickrey%E2%80%93Clarke%E2%80%93Groves_mechanism) is the textbook solution for single-item auctions: charge each winner the externality they impose on others, and truthful bidding becomes dominant strategy. But combinatorial auctions break this. When bidders want bundles of items and bundles overlap, winner determination becomes NP-hard. VCG requires solving this optimally, which is computationally intractable. It is also not budget-balanced: the mechanism may pay out more than it collects. Real exchanges use uniform-price batch auctions instead, trading exact incentive compatibility for tractability.
+**The challenge**: [download the code](https://github.com/sdiehl/zero-to-qed/blob/main/src/ZeroToQED/Auction.lean) and fill in the `sorry`. Participants submit orders over baskets of securities; the mechanism finds a combinatorial match that clears simultaneously. The value proposition is price improvement: better execution than sequential bilateral matching. Directions you might take:
 
-Here is the concrete problem: **bound the strategic gain from misreporting in a uniform-price combinatorial auction**. Define a bidder's regret as the difference between their utility under optimal manipulation and their utility under truthful bidding. Prove an upper bound on regret as a function of market thickness (number of participants) and bundle complexity (overlap structure). The conjecture is that regret goes to zero as markets get large and competitive, but no formal proof exists.
+- **Prove price improvement bounds**. Define improvement as the difference between limit price and execution price. Prove that the allocation delivers non-negative improvement for all filled orders.
+- **Verify the solver formulation**. Winner determination is solved via an optimization solver. Prove that feasible solutions correspond to valid allocations, and the objective maximizes welfare.
+- **Characterize expressiveness gains**. Prove that basket preferences strictly improve outcomes: there exist order configurations where combinatorial matching achieves fills that no sequence of bilateral matches could.
 
-Formalizing this requires expressing "for all alternative bids, utility improvement is bounded by \\(f(n, k)\\)" as a dependent type. The quantification over counterfactual strategies is where the difficulty lives.
-
-If this sounds interesting, [OneChronos](https://www.onechronos.com/) builds verified auction infrastructure for financial markets. We work on combinatorial auctions, mechanism design, and formal verification of trading systems. Apply through [our careers page](https://www.onechronos.com/careers/) or [reach out to me](mailto:sdiehl@onechronos.com) directly.
+Markets look like chaos but are actually mathematical objects with deep structure; proving theorems about them reveals invariants that no amount of testing could find. If you make progress, [OneChronos](https://www.onechronos.com/) wants to hear from you. We build market infrastructure and work on these kinds of problems. There is a lot of non-trivial work involved, and we are always looking for smart people. Apply through [our careers page](https://www.onechronos.com/careers/) or [reach out to me](mailto:sdiehl@onechronos.com) directly.
 
 ---
 

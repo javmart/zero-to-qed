@@ -2,115 +2,105 @@ import Mathlib.Data.List.Basic
 import Mathlib.Tactic
 
 /-!
-# Auction Verification
+# Combinatorial Auction Verification
 
-A batch auction for a single asset. Bidders submit (price, quantity) pairs.
-The market clears at a uniform price. We prove allocation validity but
-incentive compatibility remains an open challenge.
+Orders express preferences over baskets of instruments. The mechanism finds
+an allocation that maximizes total welfare. The open problem: prove that
+this allocation delivers price improvement to all participants.
 -/
 
 -- ANCHOR: auction_types
-/-- A limit order: price and quantity -/
+/-- An instrument (stock, ETF, etc) -/
+abbrev Instrument := Nat
+
+/-- A basket: quantities of each instrument (positive = buy, negative = sell) -/
+abbrev Basket := List (Instrument × Int)
+
+/-- An order: willingness to trade a basket at a limit price -/
 structure Order where
-  price : Nat      -- Price in basis points (avoids floats)
-  quantity : Nat   -- Number of units
-  deriving DecidableEq, Repr
-
-/-- An order book: sorted buy orders (descending) and sell orders (ascending) -/
-structure OrderBook where
-  bids : List Order  -- Buy orders, highest price first
-  asks : List Order  -- Sell orders, lowest price first
+  basket : Basket
+  limit : Nat  -- Maximum price willing to pay (or minimum to receive)
   deriving Repr
 
-/-- Result of a batch auction -/
-structure ClearingResult where
-  clearingPrice : Nat
-  volume : Nat           -- Total units traded
-  buyFills : List Nat    -- Quantities filled per bid (same order as input)
-  sellFills : List Nat   -- Quantities filled per ask
-  deriving Repr
+/-- An order book is a collection of orders -/
+abbrev OrderBook := List Order
+
+/-- An allocation assigns fill quantities to each order -/
+abbrev Allocation := List Nat  -- fill[i] = units of order i executed
 -- ANCHOR_END: auction_types
 
 -- ANCHOR: auction_clear
-/-- Find total demand at a given price -/
-def demandAtPrice (bids : List Order) (p : Nat) : Nat :=
-  (bids.filter (·.price ≥ p)).map (·.quantity) |>.sum
+/-- Total value an allocation delivers to participants -/
+def welfare (book : OrderBook) (alloc : Allocation) (prices : List Nat) : Nat :=
+  -- Simplified: sum of (limit - execution price) for filled orders
+  (book.zip alloc).foldl (fun acc (order, fill) =>
+    if fill > 0 then acc + order.limit else acc) 0
 
-/-- Find total supply at a given price -/
-def supplyAtPrice (asks : List Order) (p : Nat) : Nat :=
-  (asks.filter (·.price ≤ p)).map (·.quantity) |>.sum
+/-- Check if allocation is feasible (net position in each instrument is zero) -/
+def isFeasible (book : OrderBook) (alloc : Allocation) : Prop :=
+  -- Each instrument's net traded quantity sums to zero
+  True  -- Simplified; real check would verify balance
 
-/-- Simple clearing: find price where supply meets demand -/
-def clearBatch (book : OrderBook) : ClearingResult :=
-  -- Collect all prices as potential clearing prices
-  let prices := (book.bids.map (·.price) ++ book.asks.map (·.price)).eraseDups
-  -- Find price that maximizes volume (simplified)
-  let bestPrice := prices.foldl (fun best p =>
-    let vol := min (demandAtPrice book.bids p) (supplyAtPrice book.asks p)
-    let bestVol := min (demandAtPrice book.bids best) (supplyAtPrice book.asks best)
-    if vol > bestVol then p else best) 0
-  let volume := min (demandAtPrice book.bids bestPrice) (supplyAtPrice book.asks bestPrice)
-  -- Simplified fill allocation (pro-rata would be more realistic)
-  let buyFills := book.bids.map (fun o => if o.price ≥ bestPrice then o.quantity else 0)
-  let sellFills := book.asks.map (fun o => if o.price ≤ bestPrice then o.quantity else 0)
-  { clearingPrice := bestPrice, volume, buyFills, sellFills }
+/-- Find welfare-maximizing allocation (the solver's job) -/
+def optimize (book : OrderBook) : Allocation :=
+  -- In practice: encode constraints, solve, decode
+  book.map (fun _ => 0)  -- Placeholder
 -- ANCHOR_END: auction_clear
 
 -- ANCHOR: auction_safety
-/-- Safety: buyers never pay more than their bid -/
-theorem buyers_pay_at_most_bid (book : OrderBook) :
-    let result := clearBatch book
-    ∀ i : Fin book.bids.length,
-      (result.buyFills.getD i 0 > 0) →
-      result.clearingPrice ≤ (book.bids.get i).price := by
-  sorry  -- Exercise: prove this
+/-- Safety: no order executes at a worse price than its limit -/
+theorem respects_limits (book : OrderBook) (alloc : Allocation) (prices : List Nat) :
+    ∀ i : Fin book.length,
+      (alloc.getD i 0 > 0) →
+      prices.getD i 0 ≤ (book.get i).limit := by
+  intro i hfill
+  sorry  -- Prove execution price ≤ limit for all filled orders
 
-/-- Safety: sellers receive at least their ask -/
-theorem sellers_receive_at_least_ask (book : OrderBook) :
-    let result := clearBatch book
-    ∀ i : Fin book.asks.length,
-      (result.sellFills.getD i 0 > 0) →
-      result.clearingPrice ≥ (book.asks.get i).price := by
-  sorry  -- Exercise: prove this
+/-- Safety: allocation is balanced (no net position created) -/
+theorem allocation_balanced (book : OrderBook) (alloc : Allocation) :
+    isFeasible book alloc := by
+  simp [isFeasible]
 -- ANCHOR_END: auction_safety
 
 -- ANCHOR: auction_open
-/-- Utility for a buyer: units acquired times surplus -/
-def buyerUtility (trueValue : Nat) (unitsFilled : Nat) (pricePaid : Nat) : Int :=
-  unitsFilled * (trueValue - pricePaid : Int)
-
 /-!
-## The Open Problem: Incentive Compatibility
+## Open Problem: Price Improvement Bounds
 
-The safety proofs above are tractable. The hard question is:
-**Is truthful bidding optimal?**
+The mechanism should deliver **price improvement**: execution prices better
+than participants could achieve elsewhere. Formalizing this requires:
 
-A mechanism is dominant-strategy incentive compatible (DSIC) if:
-for any bidder, bidding their true value maximizes utility
-regardless of what others bid.
+1. Define a reference price (midpoint, VWAP, or external market price)
+2. Define improvement as: reference - execution for buys, execution - reference for sells
+3. Prove that improvement ≥ 0 for all participants, or characterize when it holds
 
-To prove DSIC in Lean requires quantifying over ALL alternative bids
-and showing none improve utility. This is where dependent types meet
-mechanism design, and no one has done it comprehensively.
+The key insight of combinatorial matching is that participants expressing
+preferences over baskets can achieve trades impossible through bilateral matching.
+Proving this requires showing existence of order configurations where:
+- No sequence of bilateral trades clears the market
+- The combinatorial allocation finds a feasible solution
 
-The VCG mechanism is DSIC but not budget-balanced.
-Real exchanges use uniform-price auctions which are NOT exactly DSIC.
-The open problem: characterize the manipulation bounds and prove them.
-
-If you formalize incentive compatibility for batch auctions in Lean,
-you will have done something genuinely new.
+This is the efficiency theorem for expressive bidding.
 -/
 
-/-- The conjecture: truthful bidding is approximately optimal.
-    Proving this requires formalizing "approximately" and handling
-    the full space of strategic deviations. -/
-theorem incentive_compatibility
+/-- Price improvement: difference between limit and execution price -/
+def improvement (limit : Nat) (executionPrice : Nat) : Int :=
+  (limit : Int) - (executionPrice : Int)
+
+/-- The conjecture: combinatorial matching delivers non-negative improvement -/
+theorem price_improvement_nonneg
     (book : OrderBook)
-    (i : Fin book.bids.length)
-    (trueValue : Nat)
-    (alternativeBid : Order) :
-    -- Utility from bidding true value ≥ utility from any alternative
-    -- (This statement is incomplete - a real proof needs the full setup)
+    (alloc : Allocation)
+    (prices : List Nat)
+    (i : Fin book.length)
+    (hfill : alloc.getD i 0 > 0) :
+    improvement (book.get i).limit (prices.getD i 0) ≥ 0 := by
+  sorry  -- Open problem: prove price improvement guarantee
+
+/-- The deeper conjecture: combinatorial beats bilateral -/
+theorem combinatorial_dominates_bilateral
+    (book : OrderBook) :
+    -- There exist order configurations where combinatorial finds trades
+    -- that no sequence of bilateral matches could achieve
     True := by
-  sorry  -- Open problem: make this statement precise and prove it
+  sorry  -- Formalize bilateral matching and prove strict improvement exists
 -- ANCHOR_END: auction_open

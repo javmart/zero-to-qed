@@ -324,4 +324,4 @@ Most software is written fast, tested hopefully, and debugged frantically. Depen
 
 ## From Theory to Practice
 
-You now understand the type-theoretic machinery. The next chapter turns to strategy: how to approach proofs systematically, read goal states, choose tactics, and develop the intuition for what technique applies where. Less "what does this mean" and more "how do I make this red squiggle go away."
+You now understand the type-theoretic machinery. The next article turns to strategy: how to approach proofs systematically, read goal states, choose tactics, and develop the intuition for what technique applies where. Less "what does this mean" and more "how do I make this red squiggle go away."

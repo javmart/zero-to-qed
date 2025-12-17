@@ -1,6 +1,6 @@
 # Mathlib
 
-[Mathlib](https://github.com/leanprover-community/mathlib4) is the mathematical library for Lean 4. Over a million lines of formalized mathematics, from basic logic through graduate-level algebra, analysis, and number theory. Hundreds of contributors have poured years of work into this thing. When you import it, you inherit their labor. The triangle inequality is already proven. So is the fundamental theorem of algebra. You do not need to prove that primes are infinite; someone did that in 2017 and you can just use it.
+[Mathlib](https://github.com/leanprover-community/mathlib4) is the mathematical library for Lean 4. Over a million lines of formalized mathematics, from basic logic through graduate-level algebra, analysis, and number theory. Hundreds of contributors have poured years of work into this thing. When you import it, you inherit their labor. The triangle inequality is already proven. So is the fundamental theorem of algebra. You do not need to prove that primes are infinite; someone did that in 2017 and you can just use it. The community tracks progress against a list of [100 major theorems](https://leanprover-community.github.io/100.html); most are done.
 
 The library is organized hierarchically, which is a polite way of saying "good luck finding anything without help." At the foundation sit logic, sets, and basic data types. Above these rise algebraic structures, then topology and analysis, then specialized domains like combinatorics and number theory. Each layer builds on those below. The [Mathlib documentation](https://leanprover-community.github.io/mathlib4_docs/) provides searchable API references, though "searchable" is doing some heavy lifting in that sentence.
 
@@ -70,11 +70,11 @@ Abstract structures and discrete mathematics.
 
 Mathlib is large. You will spend more time searching for lemmas than proving theorems, at least at first. Accept this. The good news is that the lemma you need almost certainly exists. The bad news is that it might be named something you would never guess.
 
-**In-editor search**: The `exact?` tactic searches for lemmas that exactly match your goal. The `apply?` tactic finds lemmas whose conclusion unifies with your goal. These are your best friends. Use them constantly.
+**[Moogle](https://www.moogle.ai/)**: Semantic search for Mathlib. Type "triangle inequality for norms" and find `norm_add_le`. Sometimes it even understands what you meant rather than what you typed. Start here when you know what you want but not what it is called.
 
-**Pattern search**: [Loogle](https://loogle.lean-lang.org/) searches Mathlib by type signature. If you need a lemma about `List.map` and `List.length`, search for `List.map, List.length` and find `List.length_map`. This works better than it sounds.
+**[Loogle](https://loogle.lean-lang.org/)**: Type signature search. If you need a lemma involving `List.map` and `List.length`, search for `List.map, List.length` and find `List.length_map`. Precise queries get precise answers.
 
-**Natural language search**: [Moogle](https://www.moogle.ai/) uses semantic search to find lemmas from natural language queries. Ask "triangle inequality for norms" and find `norm_add_le`. Sometimes it even understands what you meant rather than what you typed.
+**In-editor tactics**: The `exact?` tactic searches for lemmas that exactly match your goal. The `apply?` tactic finds lemmas whose conclusion unifies with your goal. Slow but thorough. Use them when Moogle and Loogle fail.
 
 **Module structure**: If you need facts about prime numbers, look in `Mathlib.Data.Nat.Prime`. If you need topology lemmas, start in `Mathlib.Topology`. The [Mathematics in Mathlib](https://leanprover-community.github.io/mathlib-overview.html) overview provides a map of what has been formalized and where. When all else fails, grep the source code like everyone else does.
 
@@ -136,23 +136,41 @@ When stuck, let the computer do the searching. `exact?` trawls through Mathlib l
 
 ## The Fundamental Theorem of Calculus
 
-Remember the [Fundamental Theorem of Calculus](https://leanprover-community.github.io/mathlib4_docs/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.html) from high school? The one that says the integral of a derivative gives you back the original function, evaluated at the endpoints? That theorem you memorized, used on exams, and maybe wondered if it was actually true or just something teachers said?
+The [Fundamental Theorem of Calculus](https://leanprover-community.github.io/mathlib4_docs/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.html) in Mathlib is due to Yury Kudryashov and Benjamin Davidson. It comes in two parts, as you might remember from analysis.
+
+The first part says that integrating then differentiating recovers the original function. If \\(f\\) is integrable and tends to \\(c\\) at \\(b\\), then the function \\(u \mapsto \int_a^u f(x)\,dx\\) has derivative \\(c\\) at \\(b\\):
+
+```lean
+theorem integral_hasStrictDerivAt_of_tendsto_ae_right
+    (hf : IntervalIntegrable f volume a b)
+    (hmeas : StronglyMeasurableAtFilter f (nhds b) volume)
+    (hb : Tendsto f (nhds b ⊓ ae volume) (nhds c)) :
+    HasStrictDerivAt (fun u => ∫ x in a..u, f x) c b
+```
+
+The second part says that differentiating then integrating recovers the original function up to boundary values. If \\(f\\) is continuous on \\([a,b]\\) and differentiable on \\((a,b)\\) with integrable derivative, then:
 
 $$\int_a^b f'(x) \, dx = f(b) - f(a)$$
 
-It is proven in Mathlib. All of it. This statement is a theorem you can import and use. The proof handles all the edge cases your calculus teacher glossed over: measurability, integrability, what happens at the boundary points. Centuries of mathematical refinement, compressed into something a computer can check.
-
 ```lean
-import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
-
-open MeasureTheory Set
-
--- The second fundamental theorem of calculus: ∫ f' = f(b) - f(a)
-example (f f' : ℝ → ℝ) (a b : ℝ)
-    (hf : ∀ x ∈ uIcc a b, HasDerivAt f (f' x) x)
-    (hf' : IntervalIntegrable f' volume a b) :
-    ∫ x in a..b, f' x = f b - f a :=
-  intervalIntegral.integral_eq_sub_of_hasDerivAt hf hf'
+theorem integral_eq_sub_of_hasDeriv_right_of_le
+    (hab : a ≤ b)
+    (hcont : ContinuousOn f (Icc a b))
+    (hderiv : ∀ x ∈ Ioo a b, HasDerivWithinAt f (f' x) (Ioi x) x)
+    (hint : IntervalIntegrable f' volume a b) :
+    ∫ x in a..b, f' x = f b - f a
 ```
 
-That is high school calculus, machine-verified. The gap between "this seems true" and "this is proven" turns out to be about four lines of Lean.
+The hypotheses handle the edge cases your calculus teacher glossed over: continuity on the closed interval, differentiability on the open interior, integrability of the derivative. Centuries of refinement, machine-checked.
+
+## Resources
+
+- [Moogle](https://www.moogle.ai/) - Search Mathlib using natural language queries like "triangle inequality for norms".
+- [Loogle](https://loogle.lean-lang.org/) - Search by type signature when you know the shape of the lemma you need.
+- [LeanExplore](https://leanexplore.com/) - Semantic search that also indexes metaprogramming and exposes an MCP interface for AI agents.
+- [Lean Finder](https://leanfinder.github.io/) - Understands proof states and theorem statements, not just keywords.
+- [Mathlib4 Docs](https://leanprover-community.github.io/mathlib4_docs/) - Auto-generated API reference for every declaration in Mathlib.
+- [Mathematics in Mathlib](https://leanprover-community.github.io/mathlib-overview.html) - Map of formalized mathematics organized by mathematical area.
+- [100 Theorems](https://leanprover-community.github.io/100.html) - Tracks which of 100 major theorems have been formalized in Lean.
+- [Zulip Chat](https://leanprover.zulipchat.com/) - Ask questions in the "Is there code for X?" stream when search engines fail.
+- [GitHub](https://github.com/leanprover-community/mathlib4) - Source code, issue tracker, and contribution guidelines.

@@ -180,4 +180,4 @@ In short: Lean and Coq make you prove everything is correct, Rust makes you prov
 
 ## Where Types Meet Values
 
-Type theory provides the foundation. The next chapter explores dependent types in depth: how types can depend on values, how propositions become types, and how proofs become programs. This is where Lean's power as a theorem prover emerges from its foundations as a programming language.
+Type theory provides the foundation. The next article explores dependent types in depth: how types can depend on values, how propositions become types, and how proofs become programs. This is where Lean's power as a theorem prover emerges from its foundations as a programming language.

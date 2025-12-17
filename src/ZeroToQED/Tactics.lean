@@ -375,6 +375,19 @@ theorem grind_example4 (x y : Nat) :
   grind
 -- ANCHOR_END: grind
 
+-- ANCHOR: grind_complex
+-- Nested function applications with chained equalities
+theorem grind_chain (f g : Nat → Nat) (a b c d : Nat)
+    (h1 : a = b) (h2 : c = d) (h3 : f a = g c) (h4 : g d = 42) :
+    f b = 42 := by
+  grind
+
+-- Existential witnesses from equality reasoning
+theorem grind_exists (p : Nat → Prop) (a b : Nat)
+    (h1 : a = b) (h2 : p a) : ∃ x, p x ∧ x = b := by
+  grind
+-- ANCHOR_END: grind_complex
+
 -- ANCHOR: tauto
 theorem tauto_example (p q : Prop) : p → (p → q) → q := by
   tauto

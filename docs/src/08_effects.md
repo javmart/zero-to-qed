@@ -139,4 +139,4 @@ This matters because the economics of software are changing. When code is cheap 
 
 ## From Abstract to Concrete
 
-Monads describe effects abstractly. The next chapter makes them concrete: actual file I/O, process management, environment variables, and the runtime machinery that connects your pure descriptions to the impure world. This completes the programming half of our journey.
+Monads describe effects abstractly. The next article makes them concrete: actual file I/O, process management, environment variables, and the runtime machinery that connects your pure descriptions to the impure world. This completes the programming half of our journey.

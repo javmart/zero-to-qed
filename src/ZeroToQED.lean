@@ -16,6 +16,5 @@ import ZeroToQED.Auction
 /-!
 # From Zero to QED
 
-Main module that imports all submodules for the book chapters.
-Each module corresponds to a section in the mdBook documentation.
+Main module that imports all submodules for the sections.
 -/

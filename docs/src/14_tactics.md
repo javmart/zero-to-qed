@@ -551,14 +551,26 @@ The `aesop` tactic is a general-purpose automation tactic that combines many str
 > `aesop` is powerful but can be slow on complex goals. Use `aesop?` to see what it did, then extract a faster proof. Register custom lemmas with `@[aesop safe]` or `@[aesop unsafe 50%]` to extend its knowledge. The `safe` rules are always applied; `unsafe` rules are tried with backtracking weighted by percentage.
 
 ### grind
-`grind` performs proof search using congruence closure, forward chaining, and case splitting. It's particularly effective for goals involving equational reasoning and logical connectives.
+
+The `grind` tactic is one of Lean 4's most sophisticated automation tools. Under the hood, it maintains an [e-graph](https://en.wikipedia.org/wiki/E-graph) (equivalence graph), a data structure that efficiently represents equivalence classes of terms. When you assert `a = b`, the e-graph merges the equivalence classes containing `a` and `b`. The key insight is congruence: if `a = b`, then `f a = f b` for any function `f`. The e-graph propagates these consequences automatically.
+
+The algorithm works in three phases. First, congruence closure processes all equalities and computes the transitive, symmetric, reflexive closure under function application. If you know \\(x = y\\) and \\(f(x) = 10\\), congruence closure deduces \\(f(y) = 10\\) without explicit rewriting. Second, forward chaining applies implications: if you have \\(p \land q\\) and \\(q \to r\\), it extracts \\(q\\) from the conjunction and fires the implication to derive \\(r\\). Third, case splitting handles disjunctions and if-then-else expressions by exploring branches.
 
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:grind}}
 ```
 
+The power shows up when these mechanisms combine. Here `grind` chains four equalities through two functions to conclude `f b = 42`:
+
+```lean
+{{#include ../../src/ZeroToQED/Tactics.lean:grind_complex}}
+```
+
+> [!TIP]
+> `grind` excels at "obvious" goals that would require tedious manual rewriting. If your goal involves chained equalities, function congruence, or propositional reasoning, try `grind` before writing out the steps by hand. For debugging, `grind?` shows the proof term it constructs.
+
 ### tauto
-The `tauto` tactic proves propositional tautologies involving `∧`, `∨`, `→`, `↔`, `¬`, `True`, and `False`. It handles classical and intuitionistic reasoning automatically.
+The `tauto` tactic proves propositional tautologies involving \\(\land\\), \\(\lor\\), \\(\to\\), \\(\leftrightarrow\\), \\(\lnot\\), `True`, and `False`. It handles classical and intuitionistic reasoning automatically.
 
 ```lean
 {{#include ../../src/ZeroToQED/Tactics.lean:tauto}}
@@ -673,4 +685,4 @@ Universal statements claim a property holds for all values. To prove one, use `i
 
 ## Using This Reference
 
-You do not need to memorize this chapter. Bookmark it. When you encounter a goal you cannot close, return here and ask: what shape is my goal? Implication, conjunction, existential, equality? Find the matching section. The tactic you need is there. Over time, the common ones become muscle memory. The obscure ones remain here for when you need them.
+You do not need to memorize this article. Bookmark it. When you encounter a goal you cannot close, return here and ask: what shape is my goal? Implication, conjunction, existential, equality? Find the matching section. The tactic you need is there. Over time, the common ones become muscle memory. The obscure ones remain here for when you need them.
