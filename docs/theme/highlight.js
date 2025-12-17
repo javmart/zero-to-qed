@@ -408,4 +408,126 @@ document.addEventListener('DOMContentLoaded', function() {
       hljs.highlightBlock(block);
     });
   }
-});
+});/*! `lean4` grammar compiled for Highlight.js 11.9.0 */
+/*
+ * Language: Lean 4
+ * Author: Modified from highlightjs-lean by Patrick Massot, updated for Lean 4
+ * Category: scientific
+ * Description: Language definition for Lean 4 theorem prover
+ */
+(function(){
+  var e = (function(){
+    "use strict";
+    return function(hljs) {
+      var LEAN_KEYWORDS = {
+        $pattern: /[\w'][\w'\u207F-\u209C\u1D62-\u1D6A\u2079]*/u,
+        keyword:
+          'theorem|10 lemma|10 def definition abbrev example ' +
+          'inductive coinductive structure class instance ' +
+          'axiom constant universe variable ' +
+          'where deriving extends ' +
+          'namespace section end open ' +
+          'import export ' +
+          'if then else match with fun do for in return let have ' +
+          'show from try catch finally throw ' +
+          'mutual partial unsafe opaque ' +
+          'private protected scoped local ' +
+          'attribute set_option ' +
+          'macro macro_rules syntax elab ' +
+          '#check #eval #reduce #print #help',
+        built_in:
+          'Type Prop Sort ' +
+          'Nat Int String Char Bool Unit Empty ' +
+          'List Array Option Result IO ' +
+          'rw|10 rewrite rwa simp|10 simp_all dsimp norm_num ring omega decide ' +
+          'exact|10 apply intro intros constructor ' +
+          'cases rcases obtain induction ' +
+          'rfl refl funext ext congr ' +
+          'trivial assumption contradiction exfalso ' +
+          'split left right ' +
+          'use exists ' +
+          'calc ' +
+          'aesop tauto grind native_decide ' +
+          'by_contra by_cases ' +
+          'conv conv_lhs conv_rhs ' +
+          'all_goals any_goals focus first try repeat ' +
+          'done skip ' +
+          'have replace suffices ' +
+          'sorry|10 admit|10',
+        literal:
+          'true false',
+        meta:
+          'noncomputable|10 private protected partial unsafe opaque',
+        section:
+          'section namespace end',
+        symbol:
+          ':= => -> <-'
+      };
+
+      var LEAN_IDENT_RE = /[\w'][\w'\u207F-\u209C\u1D62-\u1D6A\u2079]*/;
+
+      var DASH_COMMENT = hljs.COMMENT('--', '$');
+      var MULTI_LINE_COMMENT = hljs.COMMENT('/-', '-/', {contains: ['self']});
+      var DOC_COMMENT = {
+        className: 'doctag',
+        begin: '/--',
+        end: '-/',
+        relevance: 10
+      };
+
+      var ATTRIBUTE_DECORATOR = {
+        className: 'meta',
+        begin: '@\\[',
+        end: '\\]'
+      };
+
+      var LEAN_DEFINITION = {
+        className: 'function',
+        beginKeywords: 'def theorem lemma abbrev class instance structure inductive',
+        end: /:=|:|\bwhere\b/,
+        excludeEnd: true,
+        contains: [
+          hljs.inherit(hljs.TITLE_MODE, {
+            begin: LEAN_IDENT_RE
+          }),
+          {
+            className: 'params',
+            begin: /[({\[]/,
+            end: /[)}\]]/,
+            endsParent: false,
+            keywords: LEAN_KEYWORDS,
+          }
+        ],
+        keywords: LEAN_KEYWORDS
+      };
+
+      return {
+        name: 'lean4',
+        aliases: ['lean', 'lean4'],
+        case_insensitive: false,
+        keywords: LEAN_KEYWORDS,
+        contains: [
+          hljs.QUOTE_STRING_MODE,
+          hljs.NUMBER_MODE,
+          DASH_COMMENT,
+          MULTI_LINE_COMMENT,
+          DOC_COMMENT,
+          LEAN_DEFINITION,
+          ATTRIBUTE_DECORATOR,
+          {
+            className: 'type',
+            begin: /\b[A-Z][\w']*/,
+            relevance: 0
+          },
+          {
+            className: 'symbol',
+            begin: /[∀∃λ→←↔≤≥≠∧∨¬⊢⊨∈∉⊆⊇×∘·⟨⟩]/
+          },
+          { begin: /⟨/ } // relevance booster
+        ]
+      };
+    };
+  })();
+  hljs.registerLanguage("lean4", e);
+  hljs.registerLanguage("lean", e);
+})();

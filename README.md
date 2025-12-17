@@ -32,7 +32,7 @@
 | 16 | [Mathematics](docs/src/16_mathematics.md) | [Mathematics.lean](src/ZeroToQED/Mathematics.lean) |
 | 17 | [Mathlib](docs/src/17_mathlib.md) | [Mathlib.lean](src/ZeroToQED/Mathlib.lean) |
 | 18 | [Verification](docs/src/18_verification.md) | [Verification.lean](src/ZeroToQED/Verification.lean), [GameOfLife.lean](src/ZeroToQED/GameOfLife.lean), [StackMachine.lean](src/ZeroToQED/StackMachine.lean) |
-| 19 | [AI](docs/src/19_artificial_intelligence.md) | |
+| 19 | [AI](docs/src/19_artificial_intelligence.md) | [Auction.lean](src/ZeroToQED/Auction.lean), [Vickrey.lean](src/ZeroToQED/Vickrey.lean), [CombinatorialAuction.lean](src/ZeroToQED/CombinatorialAuction.lean) |
 | 20 | [References](docs/src/20_references.md) | |
 
 ## Build
