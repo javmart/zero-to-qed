@@ -72,7 +72,13 @@ def two (b : Bool) : if b then Unit × Unit else String :=
   | false => "two"      -- Returns a string when b is false
 ```
 
-The return type literally changes based on the runtime value. Call `two true` and you get a `Unit × Unit`. Call `two false` and you get a `String`. This should feel slightly transgressive. A function that returns different types? In most languages, this is either impossible or requires erasing all type information and hoping for the best. Here, the type system tracks it precisely. The function is total, the types are known, the compiler is satisfied. This enables encoding invariants directly in types. For example, `Vector α n` encodes the length `n` in the type itself, making it impossible to write functions that violate length constraints. Your off-by-one errors become compile-time errors. The compiler catches at build time what you would otherwise discover in production, at 3am, with the on-call phone ringing.
+The return type literally changes based on the runtime value. Call `two true` and you get a `Unit × Unit`. Call `two false` and you get a `String`. This should feel slightly transgressive. A function that returns different types? In most languages, this is either impossible or requires erasing all type information and hoping for the best. Here, the type system tracks it precisely. The function is total, the types are known, the compiler is satisfied.
+
+```lean
+{{#include ../../src/ZeroToQED/DependentTypes.lean:dependent_pattern_matching}}
+```
+
+This enables encoding invariants directly in types. For example, `Vector α n` encodes the length `n` in the type itself, making it impossible to write functions that violate length constraints. Your off-by-one errors become compile-time errors. The compiler catches at build time what you would otherwise discover in production, at 3am, with the on-call phone ringing.
 
 ### Typing Rules for Functions
 
@@ -122,6 +128,12 @@ For structural recursion on inductive types, Lean automatically proves terminati
 
 ```lean
 {{#include ../../src/ZeroToQED/TypeTheory.lean:functions_totality}}
+```
+
+For non-structural recursion, you must provide a termination measure that decreases on each recursive call. The classic examples are the GCD algorithm (where the second argument decreases) and the Ackermann function (where the lexicographic pair decreases):
+
+```lean
+{{#include ../../src/ZeroToQED/DependentTypes.lean:termination}}
 ```
 
 ### Function API Reference
@@ -219,6 +231,12 @@ Definitions can take universe parameters, and universe levels support expression
 {{#include ../../src/ZeroToQED/TypeTheory.lean:universes_lifting}}
 ```
 
+Universe polymorphism lets definitions work at any universe level. The identity function, for instance, should work on values, on types, and on types of types. By parameterizing over universe levels, a single definition serves all purposes:
+
+```lean
+{{#include ../../src/ZeroToQED/DependentTypes.lean:universe_polymorphism}}
+```
+
 Two operators bridge universe gaps:
 - **PLift**: Lifts any type (including propositions) by exactly one level
 - **ULift**: Lifts non-proposition types by any number of levels
@@ -267,6 +285,18 @@ $$\\text{Vector.rec} : \\Pi (P : \\Pi n, \\text{Vector } \\alpha \\, n \\to \\te
 {{#include ../../src/ZeroToQED/TypeTheory.lean:inductive_indexed}}
 ```
 
+The `Fin n` type represents natural numbers strictly less than `n`. It is perhaps the simplest useful indexed type: the index constrains which values can exist. A `Fin 3` can only be 0, 1, or 2. Attempting to construct a `Fin 3` with value 3 is a type error, not a runtime error.
+
+```lean
+{{#include ../../src/ZeroToQED/DependentTypes.lean:fin_basics}}
+```
+
+Vectors generalize lists by tracking their length in the type. A `Vec α n` is a list of exactly `n` elements of type `α`. The `head` function can only be called on non-empty vectors because its type requires `Vec α (n + 1)`. No runtime check needed; the type system enforces the precondition.
+
+```lean
+{{#include ../../src/ZeroToQED/DependentTypes.lean:vector_type}}
+```
+
 ### Mutual and Nested Inductive Types
 
 Multiple inductive types can be defined simultaneously when they reference each other. Nested inductive types are defined recursively through other type constructors.
@@ -281,6 +311,28 @@ Structures are specialized single-constructor inductive types with no indices. T
 
 ```lean
 {{#include ../../src/ZeroToQED/TypeTheory.lean:inductive_structures}}
+```
+
+### Sigma Types and Subtypes
+
+Sigma types (dependent pairs) package a value with data that depends on it. The notation `Σ x : α, β x` describes pairs where the second component's type depends on the first component's value. This is the dependent version of the product type `α × β`.
+
+```lean
+{{#include ../../src/ZeroToQED/DependentTypes.lean:sigma_types}}
+```
+
+Subtypes refine existing types with predicates. The type `{ x : α // P x }` contains values of type `α` that satisfy predicate `P`. Each element bundles a value with a proof that it satisfies the constraint. This is how you express "positive integers" or "sorted lists" at the type level.
+
+```lean
+{{#include ../../src/ZeroToQED/DependentTypes.lean:subtype}}
+```
+
+### Equality as a Type
+
+The equality type `a = b` is itself a dependent type: it depends on the values `a` and `b`. The only constructor is `rfl : a = a`, which proves that any value equals itself. Proofs of equality can be used to substitute equal values, and equality satisfies the expected properties of symmetry and transitivity.
+
+```lean
+{{#include ../../src/ZeroToQED/DependentTypes.lean:equality_types}}
 ```
 
 ## Quotient Types
