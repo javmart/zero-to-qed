@@ -54,6 +54,8 @@ The practical experience differs from conventional programming. Types become mor
 
 ## The Foundational Crisis
 
+*This section covers historical background and can be skipped without losing the thread.*
+
 By the late 19th century, mathematics faced a crisis of foundations. Mathematicians had built analysis on set theory, set theory on logic, and logic on intuition. The foundations kept shifting. [Georg Cantor](https://en.wikipedia.org/wiki/Georg_Cantor)'s work on infinite sets produced results that seemed paradoxical. The question became urgent: could mathematics be placed on a foundation that was provably secure?
 
 ### Russell's Paradox
