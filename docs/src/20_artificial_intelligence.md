@@ -73,7 +73,7 @@ Markets look like chaos but are actually mathematical objects with deep structur
 - [LeanDojo](https://leandojo.org/): ML infrastructure for theorem proving
 - [Lean Copilot](https://github.com/lean-dojo/LeanCopilot): Neural inference in Lean
 
-Frontier models have become increasingly capable at writing Lean. As of December 2025, Gemini 2.5 Pro and [Claude Opus 4.5](https://www.galois.com/articles/claude-can-sometimes-prove-it) represent the state of the art for interactive theorem proving. Google reportedly has internal models that perform even better. Six months ago these models struggled with basic tactics; now they can complete non-trivial proofs with guidance. They are not yet autonomous mathematicians, but they may be useful collaborators in the not too distant future.
+Frontier models have become increasingly capable at writing Lean. As of December 2025, Gemini 3.5 Pro and [Claude Opus 4.5](https://www.galois.com/articles/claude-can-sometimes-prove-it) represent the state of the art for interactive theorem proving. Google reportedly has internal models that perform even better. Six months ago these models struggled with basic tactics; now they can complete non-trivial proofs with guidance. They are not yet autonomous mathematicians, but they may be useful collaborators in the not too distant future.
 
 **Interactive Proving with MCP**
 
