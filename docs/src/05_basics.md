@@ -286,14 +286,18 @@ Every Lean file is a sequence of toplevel declarations. These are the building b
 
 **Organization:**
 
-| Declaration     | Purpose                  | Example                                           |
-| --------------- | ------------------------ | ------------------------------------------------- |
-| **`variable`**  | Auto-add to definitions  | [Modules and Namespaces](#modules-and-namespaces) |
-| **`namespace`** | Group under prefix       | [Modules and Namespaces](#modules-and-namespaces) |
-| **`section`**   | Scope for variables      | [Modules and Namespaces](#modules-and-namespaces) |
-| **`open`**      | Bring names into scope   | [Modules and Namespaces](#modules-and-namespaces) |
-| **`attribute`** | Attach metadata          | [Attribute example](#attribute-example)           |
-| **`export`**    | Re-export from namespace | [Modules and Namespaces](#modules-and-namespaces) |
+| Declaration      | Purpose                  | Example                                           |
+| ---------------- | ------------------------ | ------------------------------------------------- |
+| **`import`**     | Load another module      | [Modules and Namespaces](#modules-and-namespaces) |
+| **`variable`**   | Auto-add to definitions  | [Modules and Namespaces](#modules-and-namespaces) |
+| **`namespace`**  | Group under prefix       | [Modules and Namespaces](#modules-and-namespaces) |
+| **`section`**    | Scope for variables      | [Modules and Namespaces](#modules-and-namespaces) |
+| **`open`**       | Bring names into scope   | [Modules and Namespaces](#modules-and-namespaces) |
+| **`universe`**   | Declare universe levels  | [Universe example](#universe-example)             |
+| **`attribute`**  | Attach metadata          | [Attribute example](#attribute-example)           |
+| **`export`**     | Re-export from namespace | [Modules and Namespaces](#modules-and-namespaces) |
+| **`notation`**   | Custom syntax            | [Notation example](#notation-example)             |
+| **`set_option`** | Configure compiler       | [Set Option example](#set-option-example)         |
 
 **Interactive Commands:**
 
@@ -308,11 +312,15 @@ The distinction between **`def`** and **`theorem`** matters for performance. Lea
 
 ### Abbrev Example
 
+Abbreviations are transparent definitions that unfold automatically during elaboration. Use them for type aliases.
+
 ```lean
 {{#include ../../src/ZeroToQED/Basics.lean:abbrev_example}}
 ```
 
 ### Opaque Example
+
+Opaque definitions hide their implementation from the type checker. Useful for abstracting implementation details.
 
 ```lean
 {{#include ../../src/ZeroToQED/Basics.lean:opaque_example}}
@@ -333,6 +341,8 @@ Lean's kernel accepts axioms unconditionally. The `#print axioms` command shows 
 
 ### Attribute Example
 
+Attributes tag declarations with metadata that affects how Lean processes them. The `@[simp]` attribute is the most common; see [Tactics](./14_tactics.md) for how `simp` uses it.
+
 ```lean
 {{#include ../../src/ZeroToQED/Basics.lean:attribute_example}}
 ```
@@ -341,6 +351,30 @@ Lean's kernel accepts axioms unconditionally. The `#print axioms` command shows 
 
 ```lean
 {{#include ../../src/ZeroToQED/Basics.lean:check_print_reduce}}
+```
+
+### Universe Example
+
+Universes prevent paradoxes in type theory. Here is the basic syntax; see [Universe Stratification](./11_type_theory.md#universe-stratification) for why they exist.
+
+```lean
+{{#include ../../src/ZeroToQED/Basics.lean:universe_example}}
+```
+
+### Notation Example
+
+Custom notation lets you extend Lean's syntax. Here is the basic syntax; see [Dependent Types: Notation](./12_dependent_types.md#notation) for more.
+
+```lean
+{{#include ../../src/ZeroToQED/Basics.lean:notation_example}}
+```
+
+### Set Option Example
+
+Compiler options control elaboration and pretty-printing. You will rarely need these until you hit edge cases.
+
+```lean
+{{#include ../../src/ZeroToQED/Basics.lean:set_option_example}}
 ```
 
 ## Example Programs

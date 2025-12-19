@@ -702,4 +702,39 @@ axiom magicNumber_positive : magicNumber > 0
 #reduce List.map (· + 1) [1, 2, 3]  -- [2, 3, 4]
 -- ANCHOR_END: check_print_reduce
 
+-- ANCHOR: universe_example
+-- Universe declarations specify type levels
+universe u v
+
+-- Now u and v can be used in type signatures
+def myId.{w} (α : Type w) (x : α) : α := x
+
+-- Types themselves have types: Type 0 : Type 1 : Type 2 : ...
+#check (Nat : Type 0)
+#check (Type 0 : Type 1)
+#check (Type 1 : Type 2)
+-- ANCHOR_END: universe_example
+
+-- ANCHOR: notation_example
+-- Custom notation for domain-specific syntax
+notation "⟪" a ", " b "⟫" => (a, b)
+
+#eval ⟪1, 2⟫  -- (1, 2)
+
+-- Prefix notation
+prefix:max "∼" => fun (n : Nat) => n + 1
+
+#eval ∼5  -- 6
+-- ANCHOR_END: notation_example
+
+-- ANCHOR: set_option_example
+-- set_option configures compiler and elaborator behavior
+set_option pp.explicit true in
+#check @id Nat 5  -- shows implicit arguments
+
+set_option maxRecDepth 1000 in
+def deepRecursion (n : Nat) : Nat :=
+  if n = 0 then 0 else deepRecursion (n - 1)
+-- ANCHOR_END: set_option_example
+
 end ZeroToQED.Basics
