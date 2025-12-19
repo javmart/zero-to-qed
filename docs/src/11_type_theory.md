@@ -139,7 +139,7 @@ Proof irrelevance also enables powerful automation. When a tactic constructs a p
 
 ## Constructive and Classical Logic
 
-Lean's type theory is constructive at its core. A constructive proof of existence must provide a witness: to prove `∃ n, P n`, you must exhibit a specific `n` and show `P n` holds. You cannot merely argue that non-existence leads to contradiction. This discipline has a profound consequence: constructive proofs are programs. A proof of `∃ n, n * n = 4` contains the number 2. You can extract it and compute with it.
+Lean's type theory is constructive at its core. A constructive proof of existence must provide a witness: to prove `∃ n, P n`, you must exhibit a specific `n` and show `P n` holds. You cannot merely argue that non-existence leads to contradiction. This discipline has a profound consequence: constructive proofs are programs. A proof of `∃ n, n * n = 4` contains the number 2. You can extract it and compute with it. The categorical semantics of this intuitionistic logic is the theory of [toposes](https://ncatlab.org/nlab/show/topos), where every topos provides a model in which constructive reasoning holds.
 
 ```lean
 {{#include ../../src/ZeroToQED/TypeTheory.lean:constructive_classical}}
@@ -202,7 +202,7 @@ Different languages make different design choices in their type systems. The fol
 - **Sorta Full**: Haskell has full type inference for base Haskell 2010, but enabling type system extensions (GADTs, TypeFamilies, RankNTypes, etc.) may require type annotations
 - **Sorta** (Decidable): Haskell 2010 has decidable type checking, but extensions like UndecidableInstances and TypeFamilies can make type checking undecidable or non-terminating
 
-Lean and Coq provide full dependent types with rich proof automation, making them suitable for formal verification. Agda emphasizes explicit proof terms and supports cubical type theory for constructive equality. Idris 2 uses quantitative type theory to track resource usage, bridging the gap between theorem proving and systems programming.
+Lean and Coq provide full dependent types with rich proof automation, making them suitable for formal verification. Agda emphasizes explicit proof terms and supports cubical type theory for constructive equality, connecting to homotopy type theory and [higher topos theory](https://ncatlab.org/nlab/show/(infinity,1)-topos). Idris 2 uses quantitative type theory to track resource usage, bridging the gap between theorem proving and systems programming.
 
 Haskell approaches dependent types through extensions like GADTs, DataKinds, and type families. Base Haskell maintains decidable type checking, but common extensions can introduce undecidability. Rust's ownership system provides memory safety guarantees through affine types, with decidable checking and predictable compile times.
 

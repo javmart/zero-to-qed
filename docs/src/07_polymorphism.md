@@ -77,7 +77,7 @@ Type classes can extend other classes, inheriting their operations while adding 
 
 ## Functor
 
-The Functor pattern captures the idea of mapping a function over a structure while preserving its shape. Lists, options, arrays, trees, and IO actions are all functors. Once you see the pattern, you see it everywhere: any context that wraps a value and lets you transform that value without escaping the context.
+The Functor pattern captures the idea of mapping a function over a structure while preserving its shape. Lists, options, arrays, trees, and IO actions are all functors. Once you see the pattern, you see it everywhere: any context that wraps a value and lets you transform that value without escaping the context. Category theory formalizes this intuition, and the [Yoneda lemma](https://leanprover-community.github.io/mathlib4_docs/Mathlib/CategoryTheory/Yoneda.html) reveals that an object is completely determined by how other objects map into it.
 
 ```lean
 {{#include ../../src/ZeroToQED/Polymorphism.lean:functor_class}}
