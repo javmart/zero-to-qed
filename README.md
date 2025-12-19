@@ -33,7 +33,7 @@ _An informal introduction to formality in Lean 4._
 | 17 | [Algebraic Structures](docs/src/17_algebraic_structures.md) | [AlgebraicStructures.lean](src/ZeroToQED/AlgebraicStructures.lean)                                                                                                                                         |
 | 18 | [Mathlib](docs/src/18_mathlib.md)                           | [Mathlib.lean](src/ZeroToQED/Mathlib.lean)                                                                                                                                                                 |
 | 19 | [Verification](docs/src/19_verification.md)                 | [Verification.lean](src/ZeroToQED/Verification.lean), [Compiler.lean](src/ZeroToQED/Compiler.lean), [GameOfLife.lean](src/ZeroToQED/GameOfLife.lean), [StackMachine.lean](src/ZeroToQED/StackMachine.lean) |
-| 20 | [AI](docs/src/20_artificial_intelligence.md)                | [Auction.lean](src/ZeroToQED/Auction.lean), [Vickrey.lean](src/ZeroToQED/Vickrey.lean), [CombinatorialAuction.lean](src/ZeroToQED/CombinatorialAuction.lean)                                               |
+| 20 | [Artificial Intelligence](docs/src/20_artificial_intelligence.md) | [Auction.lean](src/ZeroToQED/Auction.lean), [Vickrey.lean](src/ZeroToQED/Vickrey.lean), [CombinatorialAuction.lean](src/ZeroToQED/CombinatorialAuction.lean)                                               |
 | 21 | [References](docs/src/21_references.md)                     |                                                                                                                                                                                                            |
 
 ## Build

@@ -73,6 +73,8 @@ Markets look like chaos but are actually mathematical objects with deep structur
 - [LeanDojo](https://leandojo.org/): ML infrastructure for theorem proving
 - [Lean Copilot](https://github.com/lean-dojo/LeanCopilot): Neural inference in Lean
 
+Frontier models have become increasingly capable at writing Lean. As of December 2025, Gemini 2.5 Pro and [Claude Opus 4.5](https://www.galois.com/articles/claude-can-sometimes-prove-it) represent the state of the art for interactive theorem proving. Google reportedly has internal models that perform even better. Six months ago these models struggled with basic tactics; now they can complete non-trivial proofs with guidance. They are not yet autonomous mathematicians, but they may be useful collaborators in the not too distant future.
+
 **Interactive Proving with MCP**
 
 The [Model Context Protocol](https://modelcontextprotocol.io/) standardizes how AI assistants interact with external tools. For theorem proving, this means LLMs can read goal states, query for relevant lemmas, and build proofs interactively rather than generating them blind. The [lean-lsp-mcp](https://github.com/oOo0oOo/lean-lsp-mcp) server exposes Lean's language server to AI agents, enabling access to diagnostics, goal states, hover documentation, and search tools like Loogle and LeanSearch.
@@ -91,6 +93,14 @@ The [Model Context Protocol](https://modelcontextprotocol.io/) standardizes how 
 > ```
 >
 > Requires [uv](https://github.com/astral-sh/uv) package manager. Run `lake build` before starting.
+>
+> **Claude Code Skills** (optional, in addition to MCP):
+>
+> ```bash
+> /plugin marketplace add cameronfreer/lean4-skills
+> ```
+>
+> The [lean4-skills](https://github.com/cameronfreer/lean4-skills) plugin provides structured workflows, automation tools, and specialized agents for proof optimization, sorry filling, and axiom elimination.
 
 **Tools**
 
