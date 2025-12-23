@@ -1,5 +1,6 @@
 # Lean build artifacts
 .lake/
+.lake
 build/
 lake-packages/
 *.olean
